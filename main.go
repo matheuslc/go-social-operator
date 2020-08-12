@@ -17,11 +17,11 @@ func main() {
 		food.Subgroup("Fruit vegetables"),
 	)
 
-	grams := units.NewGram(200.0)
+	grams := units.Gram(10)
 
 	ingredient := rec.Ingredient{
 		Food: food,
-		Gram: grams,
+		Unit: grams,
 	}
 
 	ingredients := rec.Ingredients{ingredient}
@@ -46,5 +46,7 @@ func main() {
 		Yield:           units.Yield(10.0),
 	}
 
+	fmt.Println(recipe.Introduction)
+	fmt.Println(recipe.CookDuration)
 	fmt.Println(recipe.Ingredients[0].Food.Name)
 }

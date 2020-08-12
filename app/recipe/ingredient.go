@@ -7,8 +7,8 @@ import (
 
 // Ingredient defines an ingredient.
 type Ingredient struct {
-	food.Food
-	units.Gram
+	Food food.Food
+	Unit units.Mensurable
 }
 
 // Ingredients defines an collection of Ingredient

@@ -3,6 +3,10 @@ package measurements
 // Unit represents the base type of all types
 type Unit float32
 
+type Mensurable interface {
+	ValueOf() float64
+}
+
 // Gram defines the gram unit type
 // e.g 1.0
 type Gram Unit
@@ -26,8 +30,18 @@ type CookDuration Unit
 // PreparationTime defines the time to prepare the recipe
 type PreparationTime Unit
 
-// NewGram creates a new gram with an defined alue
-func NewGram(amount float64) Gram {
-	unit := Gram(amount)
-	return unit
+// UnitToGram creates a new gram with an defined alue
+func (unit Unit) UnitToGram() Gram {
+	gram := Gram(unit)
+	return gram
+}
+
+// ValueOf defines
+func (unit Unit) ValueOf() float64 {
+	return float64(unit)
+}
+
+// ValueOf definmes
+func (gram Gram) ValueOf() float64 {
+	return float64(gram)
 }
