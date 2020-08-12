@@ -1,5 +1,7 @@
 package recipe
 
+import m "github.com/matheuslc/guiomar/app/measurements"
+
 // Introduction defines an small text describing the recipe
 type Introduction string
 
@@ -8,4 +10,8 @@ type Recipe struct {
 	Introduction
 	Ingredients
 	Direction
+	m.CookDuration
+	m.PreparationTime
+	m.Serving
+	m.Yield
 }
