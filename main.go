@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 
+	food "github.com/matheuslc/guiomar/app/food"
 	units "github.com/matheuslc/guiomar/app/measurements"
 	rec "github.com/matheuslc/guiomar/app/recipe"
-
-	food "github.com/matheuslc/guiomar/app/food"
 )
 
 func main() {
@@ -33,7 +32,6 @@ func main() {
 	}
 
 	steps := rec.Steps{firstStep}
-
 	direction := rec.Direction{Steps: steps}
 
 	recipe := rec.Recipe{
