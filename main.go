@@ -2,11 +2,17 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 
 	food "github.com/matheuslc/guiomar/app/food"
 	units "github.com/matheuslc/guiomar/app/measurements"
 	rec "github.com/matheuslc/guiomar/app/recipe"
 )
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+}
 
 func main() {
 	food := food.NewFood(
@@ -47,4 +53,7 @@ func main() {
 	fmt.Println(recipe.Introduction)
 	fmt.Println(recipe.CookDuration)
 	fmt.Println(recipe.Ingredients[0].Food.Name)
+
+	http.HandleFunc("/", handler)
+	log.Fatal(http.ListenAndServe(":3000", nil))
 }
