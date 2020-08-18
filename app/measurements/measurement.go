@@ -3,9 +3,15 @@ package measurements
 // Unit represents the base type of all types
 type Unit float32
 
+// Mensurable defines the type tha can be used as a mensurable
+// e.g 1.0
 type Mensurable interface {
 	ValueOf() float64
 }
+
+// Microgram defines the gram unit type
+// e.g 1.0
+type Microgram Unit
 
 // Gram defines the gram unit type
 // e.g 1.0

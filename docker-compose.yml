@@ -5,8 +5,16 @@ services:
     build: .
     ports:
       - "3000:3000"
+    links:
+      - neo4j
     networks:
       - internal
+
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7687:7687"
 
 networks:
   internal:

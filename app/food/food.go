@@ -26,11 +26,11 @@ type Food struct {
 }
 
 // NewFood creates a new food struct with requireds params
-func NewFood(scientificName ScientificName, name Name, group Group, subgroup Subgroup) Food {
+func NewFood(s ScientificName, n Name, g Group, sb Subgroup) Food {
 	return Food{
-		scientificName,
-		name,
-		group,
-		subgroup,
+		s,
+		n,
+		g,
+		sb,
 	}
 }
