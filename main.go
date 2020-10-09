@@ -38,12 +38,10 @@ func main() {
 
 	grams := units.Gram(10)
 
-	ingredient := rec.Ingredient{
-		Food: food,
-		Unit: grams,
-	}
+	i, _ := rec.NewIngredient(food, grams)
+	ingredients := rec.NewIngredients()
 
-	ingredients := rec.Ingredients{ingredient}
+	ingredients.Add(i)
 
 	firstStep := rec.Step{
 		Description: rec.Description("Cozinhe essa tomate"),
@@ -64,7 +62,7 @@ func main() {
 		Yield:           units.Yield(10.0),
 	}
 
-	fmt.Println(recipe.Ingredients[0].Food.Name)
+	fmt.Println(recipe.CookDuration)
 
 	http.HandleFunc("/", handler)
 	log.Fatal(http.ListenAndServe(":3000", nil))
