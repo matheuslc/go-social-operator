@@ -10,6 +10,13 @@ import (
 	rec "github.com/matheuslc/guiomar/app/recipe"
 )
 
+type CustomType float64
+
+type product struct {
+	Name  string
+	Price float64
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
@@ -21,6 +28,13 @@ func main() {
 		food.Group("Vegetables"),
 		food.Subgroup("Fruit vegetables"),
 	)
+
+	a := CustomType(4)
+	b := CustomType(4)
+
+	if a == b {
+		fmt.Println("true")
+	}
 
 	grams := units.Gram(10)
 
@@ -50,8 +64,6 @@ func main() {
 		Yield:           units.Yield(10.0),
 	}
 
-	fmt.Println(recipe.Introduction)
-	fmt.Println(recipe.CookDuration)
 	fmt.Println(recipe.Ingredients[0].Food.Name)
 
 	http.HandleFunc("/", handler)
