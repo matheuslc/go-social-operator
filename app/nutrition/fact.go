@@ -1,13 +1,18 @@
 package nutrition
 
+import (
+	"github.com/matheuslc/guiomar/app/measurements"
+)
+
 type carbohydrates string
 type proteins string
 type name string
 type description string
 type recommendendAmount string
-type upperLimitPerDay string
+type upperLimitPerDay struct {
+	Amount measurements.Mensurable
+}
 
-// vitamin defines an vitamin structure
 type vitamin struct {
 	Name               name
 	Description        description
@@ -15,7 +20,7 @@ type vitamin struct {
 	UpperLimitPerDay   upperLimitPerDay
 }
 
-type vitamins []vitamin
+type vitamins []*vitamin
 
 type facts struct {
 	Vitamins      vitamins
