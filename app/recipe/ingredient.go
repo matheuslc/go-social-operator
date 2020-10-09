@@ -17,9 +17,6 @@ type ingredient struct {
 	unit units.Mensurable
 }
 
-// ingredients defines an collection of Ingredient
-type ingredients []ingredient
-
 // NewIngredient creates a new ingredient
 func NewIngredient(f food.Food, u units.Mensurable) (Ingredient, error) {
 	return ingredient{
