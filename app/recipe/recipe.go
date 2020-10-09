@@ -8,7 +8,7 @@ type Introduction string
 // Recipe defines how an recipe is
 type Recipe struct {
 	Introduction
-	Ingredients
+	ingredients
 	Direction
 	m.CookDuration
 	m.PreparationTime
