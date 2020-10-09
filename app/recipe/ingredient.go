@@ -5,11 +5,35 @@ import (
 	units "github.com/matheuslc/guiomar/app/measurements"
 )
 
-// Ingredient defines an ingredient.
-type Ingredient struct {
-	Food food.Food
-	Unit units.Mensurable
+// Ingredient interface defiens the power of an ingredient
+type Ingredient interface {
+	Food() food.Food
+	Unit() units.Mensurable
 }
 
-// Ingredients defines an collection of Ingredient
-type Ingredients []Ingredient
+// ingredient defines an ingredient.
+type ingredient struct {
+	food food.Food
+	unit units.Mensurable
+}
+
+// ingredients defines an collection of Ingredient
+type ingredients []ingredient
+
+// NewIngredient creates a new ingredient
+func NewIngredient(f food.Food, u units.Mensurable) (Ingredient, error) {
+	return ingredient{
+		food: f,
+		unit: u,
+	}, nil
+}
+
+// Food returns the food of an ingredient
+func (i ingredient) Food() food.Food {
+	return i.food
+}
+
+// Food returns the food of an ingredient
+func (i ingredient) Unit() units.Mensurable {
+	return i.unit
+}

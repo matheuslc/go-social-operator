@@ -9,7 +9,7 @@ type Description string
 type Step struct {
 	Description
 	Duration m.Minute
-	Ingredients
+	ingredients
 }
 
 // Steps defines a collection of steps.
