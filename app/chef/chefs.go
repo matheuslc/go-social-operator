@@ -48,6 +48,12 @@ func NewChef(r role, n name, email string) (Chef, error) {
 		return chef.NewChef(n, email)
 	}
 
+	if r == "amauter" {
+		email := verifiedEmail(email)
+		chef := amauter{}
+		return chef.NewChef(n, email)
+	}
+
 	return nil, errors.New("Error when creating a chef")
 }
 
