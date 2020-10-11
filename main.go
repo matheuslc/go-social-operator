@@ -6,11 +6,13 @@ import (
 	"net/http"
 
 	food "github.com/matheuslc/guiomar/app/food"
+	ingr "github.com/matheuslc/guiomar/app/ingredient"
+	ingrs "github.com/matheuslc/guiomar/app/ingredients"
 	units "github.com/matheuslc/guiomar/app/measurements"
 	rec "github.com/matheuslc/guiomar/app/recipe"
+	"github.com/matheuslc/guiomar/app/step"
+	"github.com/matheuslc/guiomar/app/steps"
 )
-
-type CustomType float64
 
 type product struct {
 	Name  string
@@ -29,28 +31,20 @@ func main() {
 		food.Subgroup("Fruit vegetables"),
 	)
 
-	a := CustomType(4)
-	b := CustomType(4)
-
-	if a == b {
-		fmt.Println("true")
-	}
-
 	grams := units.Gram(10)
-
-	i, _ := rec.NewIngredient(food, grams)
-	ingredients := rec.NewIngredients()
-
+	i, _ := ingr.NewIngredient(food, grams)
+	ingredients := ingrs.NewIngredients()
 	ingredients.Add(i)
 
-	firstStep := rec.Step{
-		Description: rec.Description("Cozinhe essa tomate"),
-		Duration:    units.Minute(10),
-		Ingredients: ingredients,
-	}
+	firstStep := step.NewStep(
+		step.Description("Cozinhe esse tomate"),
+		units.Minute(10),
+		ingredients,
+	)
 
-	steps := rec.Steps{firstStep}
-	direction := rec.Direction{Steps: steps}
+	stepsCollection := steps.NewSteps()
+	added := stepsCollection.Add(firstStep)
+	direction := rec.NewDirection(added)
 
 	recipe := rec.Recipe{
 		Introduction:    rec.Introduction("Essa receita é show"),
@@ -62,7 +56,7 @@ func main() {
 		Yield:           units.Yield(10.0),
 	}
 
-	fmt.Println(recipe.CookDuration)
+	fmt.Println(recipe.Direction.Steps().First().Description())
 
 	http.HandleFunc("/", handler)
 	log.Fatal(http.ListenAndServe(":3000", nil))

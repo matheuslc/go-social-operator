@@ -1,4 +1,4 @@
-package recipe
+package ingredient
 
 import (
 	food "github.com/matheuslc/guiomar/app/food"
