@@ -1,4 +1,4 @@
-package recipe
+package direction
 
 import ss "github.com/matheuslc/guiomar/app/steps"
 

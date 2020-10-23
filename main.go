@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/matheuslc/guiomar/app/direction"
 	food "github.com/matheuslc/guiomar/app/food"
 	ingr "github.com/matheuslc/guiomar/app/ingredient"
 	ingrs "github.com/matheuslc/guiomar/app/ingredients"
@@ -44,19 +45,19 @@ func main() {
 
 	stepsCollection := steps.NewSteps()
 	added := stepsCollection.Add(firstStep)
-	direction := rec.NewDirection(added)
+	direction := direction.NewDirection(added)
 
-	recipe := rec.Recipe{
-		Introduction:    rec.Introduction("Essa receita é show"),
-		Ingredients:     ingredients,
-		Direction:       direction,
-		CookDuration:    units.CookDuration(10.0),
-		PreparationTime: units.PreparationTime(20.0),
-		Serving:         units.Serving(6.0),
-		Yield:           units.Yield(10.0),
-	}
+	recipe, _ := rec.NewRecipe(
+		rec.Introduction("Essa receita é show"),
+		ingredients,
+		direction,
+		units.CookDuration(10.0),
+		units.PreparationTime(20.0),
+		units.Serving(6.0),
+		units.Yield(10.0),
+	)
 
-	fmt.Println(recipe.Direction.Steps().First().Description())
+	fmt.Println(recipe.Direction().Steps().First().Description())
 
 	http.HandleFunc("/", handler)
 	log.Fatal(http.ListenAndServe(":3000", nil))
