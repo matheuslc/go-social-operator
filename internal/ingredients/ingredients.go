@@ -1,6 +1,6 @@
 package ingredients
 
-import ing "github.com/matheuslc/guiomar/app/ingredient"
+import ing "github.com/matheuslc/guiomar/internal/ingredient"
 
 // ingredients defines an collection of Ingredient
 type ingredients []ing.Ingredient

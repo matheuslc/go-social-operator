@@ -1,8 +1,8 @@
 package ingredient
 
 import (
-	food "github.com/matheuslc/guiomar/app/food"
-	units "github.com/matheuslc/guiomar/app/measurements"
+	food "github.com/matheuslc/guiomar/internal/food"
+	units "github.com/matheuslc/guiomar/internal/measurements"
 )
 
 // Ingredient interface defiens the power of an ingredient

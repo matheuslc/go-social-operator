@@ -3,15 +3,15 @@ package recipe
 import (
 	"testing"
 
-	"github.com/matheuslc/guiomar/app/direction"
+	"github.com/matheuslc/guiomar/internal/direction"
 
-	"github.com/matheuslc/guiomar/app/step"
-	"github.com/matheuslc/guiomar/app/steps"
+	"github.com/matheuslc/guiomar/internal/step"
+	"github.com/matheuslc/guiomar/internal/steps"
 
-	"github.com/matheuslc/guiomar/app/food"
-	"github.com/matheuslc/guiomar/app/ingredient"
-	"github.com/matheuslc/guiomar/app/ingredients"
-	units "github.com/matheuslc/guiomar/app/measurements"
+	"github.com/matheuslc/guiomar/internal/food"
+	"github.com/matheuslc/guiomar/internal/ingredient"
+	"github.com/matheuslc/guiomar/internal/ingredients"
+	units "github.com/matheuslc/guiomar/internal/measurements"
 )
 
 func TestNewRecipe(t *testing.T) {

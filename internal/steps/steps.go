@@ -1,7 +1,7 @@
 package steps
 
 import (
-	"github.com/matheuslc/guiomar/app/step"
+	"github.com/matheuslc/guiomar/internal/step"
 )
 
 // Steps defines a collection of steps.

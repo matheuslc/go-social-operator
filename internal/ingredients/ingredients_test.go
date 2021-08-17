@@ -3,9 +3,9 @@ package ingredients
 import (
 	"testing"
 
-	food "github.com/matheuslc/guiomar/app/food"
-	ing "github.com/matheuslc/guiomar/app/ingredient"
-	units "github.com/matheuslc/guiomar/app/measurements"
+	food "github.com/matheuslc/guiomar/internal/food"
+	ing "github.com/matheuslc/guiomar/internal/ingredient"
+	units "github.com/matheuslc/guiomar/internal/measurements"
 )
 
 func TestNewIngredients(t *testing.T) {

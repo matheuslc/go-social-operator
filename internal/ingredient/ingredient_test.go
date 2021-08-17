@@ -3,8 +3,8 @@ package ingredient
 import (
 	"testing"
 
-	f "github.com/matheuslc/guiomar/app/food"
-	m "github.com/matheuslc/guiomar/app/measurements"
+	f "github.com/matheuslc/guiomar/internal/food"
+	m "github.com/matheuslc/guiomar/internal/measurements"
 )
 
 func TestNewIngredient(t *testing.T) {

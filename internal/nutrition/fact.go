@@ -1,7 +1,7 @@
 package nutrition
 
 import (
-	"github.com/matheuslc/guiomar/app/measurements"
+	"github.com/matheuslc/guiomar/internal/measurements"
 )
 
 type carbohydrates string

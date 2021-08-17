@@ -1,10 +1,10 @@
 package recipe
 
 import (
-	d "github.com/matheuslc/guiomar/app/direction"
-	"github.com/matheuslc/guiomar/app/ingredients"
-	ingrs "github.com/matheuslc/guiomar/app/ingredients"
-	m "github.com/matheuslc/guiomar/app/measurements"
+	d "github.com/matheuslc/guiomar/internal/direction"
+	"github.com/matheuslc/guiomar/internal/ingredients"
+	ingrs "github.com/matheuslc/guiomar/internal/ingredients"
+	m "github.com/matheuslc/guiomar/internal/measurements"
 )
 
 // Introduction defines an small text describing the recipe

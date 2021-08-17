@@ -1,6 +1,6 @@
 package direction
 
-import ss "github.com/matheuslc/guiomar/app/steps"
+import ss "github.com/matheuslc/guiomar/internal/steps"
 
 // Direction defines the directions of a recipe
 type Direction interface {

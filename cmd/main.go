@@ -5,14 +5,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/matheuslc/guiomar/app/direction"
-	food "github.com/matheuslc/guiomar/app/food"
-	ingr "github.com/matheuslc/guiomar/app/ingredient"
-	ingrs "github.com/matheuslc/guiomar/app/ingredients"
-	units "github.com/matheuslc/guiomar/app/measurements"
-	rec "github.com/matheuslc/guiomar/app/recipe"
-	"github.com/matheuslc/guiomar/app/step"
-	"github.com/matheuslc/guiomar/app/steps"
+	"github.com/matheuslc/guiomar/internal/direction"
+	food "github.com/matheuslc/guiomar/internal/food"
+	ingr "github.com/matheuslc/guiomar/internal/ingredient"
+	ingrs "github.com/matheuslc/guiomar/internal/ingredients"
+	units "github.com/matheuslc/guiomar/internal/measurements"
+	rec "github.com/matheuslc/guiomar/internal/recipe"
+	"github.com/matheuslc/guiomar/internal/step"
+	"github.com/matheuslc/guiomar/internal/steps"
 )
 
 type product struct {

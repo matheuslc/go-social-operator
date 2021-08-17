@@ -1,8 +1,8 @@
 package step
 
 import (
-	ingrs "github.com/matheuslc/guiomar/app/ingredients"
-	m "github.com/matheuslc/guiomar/app/measurements"
+	ingrs "github.com/matheuslc/guiomar/internal/ingredients"
+	m "github.com/matheuslc/guiomar/internal/measurements"
 )
 
 // Description is an text used as description of an step

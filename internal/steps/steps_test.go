@@ -3,11 +3,11 @@ package steps
 import (
 	"testing"
 
-	food "github.com/matheuslc/guiomar/app/food"
-	ingr "github.com/matheuslc/guiomar/app/ingredient"
-	ingrs "github.com/matheuslc/guiomar/app/ingredients"
-	units "github.com/matheuslc/guiomar/app/measurements"
-	"github.com/matheuslc/guiomar/app/step"
+	food "github.com/matheuslc/guiomar/internal/food"
+	ingr "github.com/matheuslc/guiomar/internal/ingredient"
+	ingrs "github.com/matheuslc/guiomar/internal/ingredients"
+	units "github.com/matheuslc/guiomar/internal/measurements"
+	"github.com/matheuslc/guiomar/internal/step"
 )
 
 func TestNewSteps(t *testing.T) {
