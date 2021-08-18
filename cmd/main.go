@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/matheuslc/guiomar/internal/db"
 	"github.com/matheuslc/guiomar/internal/direction"
 	food "github.com/matheuslc/guiomar/internal/food"
 	ingr "github.com/matheuslc/guiomar/internal/ingredient"
@@ -13,11 +15,35 @@ import (
 	rec "github.com/matheuslc/guiomar/internal/recipe"
 	"github.com/matheuslc/guiomar/internal/step"
 	"github.com/matheuslc/guiomar/internal/steps"
+	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
-type product struct {
-	Name  string
-	Price float64
+type AppContext struct {
+	Db             neo4j.Driver
+	FoodRepository food.Repository
+}
+
+func NewAppContext() (AppContext, error) {
+	db, err := db.New(os.Getenv("NEO4J_HOST"), os.Getenv("NEO4J_USERNAME"), os.Getenv("NEO4J_PASSWORD"))
+	if err != nil {
+		fmt.Printf("Can't connect to neo4j. Reason: %s", err)
+	}
+
+	foodRepository := food.Repository{
+		Db: db,
+	}
+
+	return AppContext{
+		Db:             db,
+		FoodRepository: foodRepository,
+	}, nil
+}
+
+func (app AppContext) start() error {
+	http.HandleFunc("/", handler)
+	log.Fatal(http.ListenAndServe(":3000", nil))
+
+	return nil
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -25,12 +51,22 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	app, _ := NewAppContext()
+
 	food := food.NewFood(
 		food.ScientificName("Solanum lycopersicum var. cerasiforme"),
 		food.Name("Cherry tomato"),
 		food.Group("Vegetables"),
 		food.Subgroup("Fruit vegetables"),
 	)
+
+	persistedFood, err := app.FoodRepository.PersistFood(food)
+
+	if err != nil {
+		fmt.Println("Error while persisting. Reason: %s", err)
+	} else {
+		fmt.Println("Food F F F F %s", persistedFood)
+	}
 
 	grams := units.Gram(10)
 	i, _ := ingr.NewIngredient(food, grams)
@@ -59,6 +95,5 @@ func main() {
 
 	fmt.Println(recipe.Direction().Steps().First().Description())
 
-	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	app.start()
 }

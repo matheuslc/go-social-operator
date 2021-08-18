@@ -4,13 +4,17 @@ services:
   guiomar:
     build: .
     ports:
-      - "3000:3000"
+      - "4000:3000"
     links:
-      - neo4j
-    networks:
-      - internal
+      - guiomar-db
+    depends_on: 
+      - guiomar-db
+    environment:
+      - NEO4J_HOST=bolt://localhost:7687
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=carmel
 
-  neo4j:
+  guiomar-db:
     image: neo4j:latest
     ports:
       - "7474:7474"
@@ -20,9 +24,6 @@ services:
       - neo4j_logs:/logs
     environment:
       - NEO4J_AUTH=neo4j/carmel
-
-networks:
-  internal:
 
 volumes:
   neo4j_data:
