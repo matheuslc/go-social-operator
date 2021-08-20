@@ -33,7 +33,7 @@ func (repo Repository) Save(f Food) (string, error) {
 
 	persistedFood, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (f:Food) SET f.name = $name, f.genus = $genus, f.specie = $specie RETURN f",
+			"CREATE (f:Food) SET f.name = $name, f.genus = $genus, f.specie RETURN f",
 			map[string]interface{}{
 				"name":   f.Name,
 				"genus":  f.Genus,

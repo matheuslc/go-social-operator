@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/matheuslc/guiomar/internal/chef"
 	"github.com/matheuslc/guiomar/internal/db"
 	"github.com/matheuslc/guiomar/internal/direction"
 	food "github.com/matheuslc/guiomar/internal/food"
@@ -21,6 +22,7 @@ import (
 type AppContext struct {
 	Db             neo4j.Driver
 	FoodRepository food.Repository
+	ChefRepository chef.Repository
 }
 
 func NewAppContext() (AppContext, error) {
@@ -33,9 +35,14 @@ func NewAppContext() (AppContext, error) {
 		Db: db,
 	}
 
+	chefRepository := chef.Repository{
+		Db: db,
+	}
+
 	return AppContext{
 		Db:             db,
 		FoodRepository: foodRepository,
+		ChefRepository: chefRepository,
 	}, nil
 }
 
@@ -54,19 +61,23 @@ func main() {
 	app, _ := NewAppContext()
 
 	food := food.NewFood(
-		food.ScientificName("Solanum lycopersicum var. cerasiforme"),
 		food.Name("Cherry tomato"),
-		food.Group("Vegetables"),
-		food.Subgroup("Fruit vegetables"),
+		food.Genus("Tomato"),
+		food.Specie("Cherry"),
 	)
 
-	persistedFood, err := app.FoodRepository.Save(food)
+	chef, err := chef.NewChef(chef.Role("amauter"), chef.Name("Matheus"), "mematheuslc@gmail.com")
 
 	if err != nil {
-		fmt.Println("Error while persisting. Reason: %s", err)
-	} else {
-		fmt.Println("Food F F F F %s", persistedFood)
+		fmt.Println("foda %s", err)
 	}
+
+	persistedChef, err := app.ChefRepository.Create(chef)
+	if err != nil {
+		fmt.Printf("Ae ae ae %s", err)
+	}
+
+	fmt.Println("Chef: %s", persistedChef.Name)
 
 	grams := units.Gram(10)
 	i, _ := ingr.NewIngredient(food, grams)
