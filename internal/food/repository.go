@@ -10,7 +10,7 @@ type Reader interface {
 }
 
 type Writer interface {
-	PersistFood(f Food) (Food, error)
+	save(f Food) (Food, error)
 }
 
 type Repository struct {
@@ -19,7 +19,7 @@ type Repository struct {
 	Reader
 }
 
-func (repo Repository) PersistFood(f Food) (string, error) {
+func (repo Repository) Save(f Food) (string, error) {
 	session, err := repo.Db.NewSession(neo4j.SessionConfig{
 		AccessMode:   neo4j.AccessModeWrite,
 		DatabaseName: "neo4j",
@@ -33,8 +33,12 @@ func (repo Repository) PersistFood(f Food) (string, error) {
 
 	persistedFood, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (a:Food) SET a.scientific_name = $scientificName RETURN a.scientific_name",
-			map[string]interface{}{"scientificName": "batata"},
+			"CREATE (f:Food) SET f.name = $name, f.genus = $genus, f.specie = $specie RETURN f",
+			map[string]interface{}{
+				"name":   f.Name,
+				"genus":  f.Genus,
+				"specie": f.Specie,
+			},
 		)
 
 		if err != nil {

@@ -60,7 +60,7 @@ func main() {
 		food.Subgroup("Fruit vegetables"),
 	)
 
-	persistedFood, err := app.FoodRepository.PersistFood(food)
+	persistedFood, err := app.FoodRepository.Save(food)
 
 	if err != nil {
 		fmt.Println("Error while persisting. Reason: %s", err)
