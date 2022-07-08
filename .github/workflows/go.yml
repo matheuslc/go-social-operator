@@ -3,10 +3,22 @@ name: Go
 on:
   push:
     branches: [ main ]
+    tags:
+      - v*
   pull_request:
-    branches: [ main ]
 
 jobs:
+
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: latest
+          skip-build-cache: true
 
   build:
     name: Build
