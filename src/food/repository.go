@@ -34,12 +34,15 @@ func (repo Repository) Save(f Food) (Food, error) {
 
 	persistedFood, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (f:Food) SET f.uuid = $uuid, f.name = $name, f.genus = $genus, f.specie RETURN f.uuid, f.name, f.genus, f.specie",
+			"CREATE (f:Food {id: $id, scientific_name: $scientific_name, name: $name, order: $order, family: $family, genus: $genus, specie: $specie}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie",
 			map[string]interface{}{
-				"uuid":   uuid.New(),
-				"name":   f.Name,
-				"genus":  f.Genus,
-				"specie": f.Specie,
+				"id":              uuid.New().String(),
+				"scientific_name": f.ScientificName,
+				"name":            f.Name,
+				"order":           f.Order,
+				"family":          f.Family,
+				"genus":           f.Genus,
+				"specie":          f.Specie,
 			},
 		)
 
@@ -48,11 +51,15 @@ func (repo Repository) Save(f Food) (Food, error) {
 		}
 
 		if result.Next() {
+			fmt.Println(result.Record().Values()...)
 			return Food{
-				Uuid:   Uuid(uuid.MustParse(result.Record().GetByIndex(0).(string))),
-				Name:   Name(result.Record().GetByIndex(1).(string)),
-				Genus:  Genus(result.Record().GetByIndex(2).(string)),
-				Specie: Specie(result.Record().GetByIndex(3).(string)),
+				ID:             uuid.MustParse(result.Record().GetByIndex(0).(string)),
+				ScientificName: ScientificName(result.Record().GetByIndex(1).(string)),
+				Name:           Name(result.Record().GetByIndex(2).(string)),
+				Order:          Order(result.Record().GetByIndex(3).(string)),
+				Family:         Family(result.Record().GetByIndex(4).(string)),
+				Genus:          Genus(result.Record().GetByIndex(5).(string)),
+				Specie:         Specie(result.Record().GetByIndex(6).(string)),
 			}, nil
 		}
 

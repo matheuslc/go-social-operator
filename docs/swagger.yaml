@@ -8,6 +8,21 @@ definitions:
       email:
         type: string
     type: object
+  food.createFoodPayload:
+    properties:
+      family:
+        type: string
+      genus:
+        type: string
+      name:
+        type: string
+      order:
+        type: string
+      scientific_name:
+        type: string
+      specie:
+        type: string
+    type: object
 host: localhost:7777
 info:
   contact:
@@ -40,4 +55,22 @@ paths:
       summary: Create a new chef
       tags:
       - chef
+  /api/foods:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new food which can be used within recipes
+      parameters:
+      - description: Create a new food
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/food.createFoodPayload'
+      produces:
+      - application/json
+      responses: {}
+      summary: Create a new food
+      tags:
+      - food
 swagger: "2.0"

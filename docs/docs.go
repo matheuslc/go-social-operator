@@ -51,6 +51,33 @@ const docTemplate = `{
                 ],
                 "responses": {}
             }
+        },
+        "/api/foods": {
+            "post": {
+                "description": "Creates a new food which can be used within recipes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "food"
+                ],
+                "summary": "Create a new food",
+                "parameters": [
+                    {
+                        "description": "Create a new food",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/food.createFoodPayload"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
         }
     },
     "definitions": {
@@ -64,6 +91,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "food.createFoodPayload": {
+            "type": "object",
+            "properties": {
+                "family": {
+                    "type": "string"
+                },
+                "genus": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "string"
+                },
+                "scientific_name": {
+                    "type": "string"
+                },
+                "specie": {
                     "type": "string"
                 }
             }

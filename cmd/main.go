@@ -6,6 +6,7 @@ import (
 
 	"github.com/matheuslc/guiomar/src/chef"
 	"github.com/matheuslc/guiomar/src/context"
+	"github.com/matheuslc/guiomar/src/food"
 
 	"github.com/gorilla/mux"
 
@@ -31,6 +32,7 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/chefs", chef.NewChefHandlerWrapper(app.ChefRepository)).Methods("POST")
+	router.HandleFunc("/api/foods", food.NewFoodHandlerWrapper(app.FoodRepository)).Methods("POST")
 
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 

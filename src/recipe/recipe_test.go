@@ -15,6 +15,9 @@ import (
 func TestNewRecipe(t *testing.T) {
 	foodName := food.Name("Cherry tomato")
 	food := food.NewFood(
+		food.ScientificName("Solanum lycopersicum var. cerasiforme"),
+		food.Order("Solanales"),
+		food.Family("Solanaceae"),
 		foodName,
 		food.Genus("Fruit vegetables"),
 		food.Specie("Cherry tomato"),

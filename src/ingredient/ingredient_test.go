@@ -9,6 +9,9 @@ import (
 
 func TestNewIngredient(t *testing.T) {
 	food := f.NewFood(
+		f.ScientificName("Scientific name"),
+		f.Order("order"),
+		f.Family("family"),
 		f.Name("Cherry Tomato"),
 		f.Genus("Vegetables"),
 		f.Specie("Fruit vegetables"),
