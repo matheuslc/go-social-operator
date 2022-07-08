@@ -1,0 +1,43 @@
+definitions:
+  chef.createChefPayload:
+    properties:
+      Name:
+        type: string
+      Role:
+        type: string
+      email:
+        type: string
+    type: object
+host: localhost:7777
+info:
+  contact:
+    email: mematheuslc@gmail.com
+    name: Matheus Carmo
+    url: http://www.swagger.io/support
+  description: Guiomar private and public API docs.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Guiomar API
+  version: "1.0"
+paths:
+  /api/chefs:
+    post:
+      consumes:
+      - application/json
+      description: You just need your name and your e-mail
+      parameters:
+      - description: Create a new chef
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/chef.createChefPayload'
+      produces:
+      - application/json
+      responses: {}
+      summary: Create a new chef
+      tags:
+      - chef
+swagger: "2.0"

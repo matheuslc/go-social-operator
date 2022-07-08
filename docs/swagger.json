@@ -1,0 +1,64 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Guiomar private and public API docs.",
+        "title": "Guiomar API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Matheus Carmo",
+            "url": "http://www.swagger.io/support",
+            "email": "mematheuslc@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:7777",
+    "paths": {
+        "/api/chefs": {
+            "post": {
+                "description": "You just need your name and your e-mail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chef"
+                ],
+                "summary": "Create a new chef",
+                "parameters": [
+                    {
+                        "description": "Create a new chef",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chef.createChefPayload"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "chef.createChefPayload": {
+            "type": "object",
+            "properties": {
+                "Name": {
+                    "type": "string"
+                },
+                "Role": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

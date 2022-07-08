@@ -1,4 +1,4 @@
-FROM golang:latest as builder
+FROM golang:1.18 as builder
 
 LABEL maintainer = "Matheus Carmo (a.k.a Carmel) <mematheuslc@gmail.com>"
 
@@ -20,5 +20,5 @@ COPY --from=builder /app/guiomar_exec .
 
 ENTRYPOINT /guiomar/guiomar_exec
 
-EXPOSE 3000
+EXPOSE 7777
 
