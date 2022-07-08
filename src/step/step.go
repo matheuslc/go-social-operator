@@ -1,7 +1,7 @@
 package step
 
 import (
-	ingrs "github.com/matheuslc/guiomar/src/ingredients"
+	"github.com/matheuslc/guiomar/src/ingredient"
 	m "github.com/matheuslc/guiomar/src/measurements"
 )
 
@@ -16,11 +16,11 @@ type Step interface {
 type step struct {
 	description Description
 	duration    m.Minute
-	ingredients ingrs.Ingredients
+	ingredients []ingredient.Ingredient
 }
 
 // NewStep creates a new step
-func NewStep(description Description, duration m.Minute, ingredients ingrs.Ingredients) Step {
+func NewStep(description Description, duration m.Minute, ingredients []ingredient.Ingredient) Step {
 	return &step{
 		description,
 		duration,

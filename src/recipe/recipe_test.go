@@ -6,26 +6,24 @@ import (
 	"github.com/matheuslc/guiomar/src/direction"
 
 	"github.com/matheuslc/guiomar/src/step"
-	"github.com/matheuslc/guiomar/src/steps"
 
 	"github.com/matheuslc/guiomar/src/food"
 	"github.com/matheuslc/guiomar/src/ingredient"
-	"github.com/matheuslc/guiomar/src/ingredients"
 	units "github.com/matheuslc/guiomar/src/measurements"
 )
 
 func TestNewRecipe(t *testing.T) {
 	foodName := food.Name("Cherry tomato")
 	food := food.NewFood(
-		food.ScientificName("Solanum lycopersicum var. cerasiforme"),
 		foodName,
-		food.Group("Vegetables"),
-		food.Subgroup("Fruit vegetables"),
+		food.Genus("Fruit vegetables"),
+		food.Specie("Cherry tomato"),
 	)
+
 	grams := units.Gram(10)
 	ingr, _ := ingredient.NewIngredient(food, grams)
-	collection := ingredients.NewIngredients()
-	ingrs := collection.Add(ingr)
+	collection := []ingredient.Ingredient{}
+	ingrs := append(collection, ingr)
 
 	firstStep := step.NewStep(
 		step.Description("Corte em pedaços e adicione ao fogo"),
@@ -39,9 +37,10 @@ func TestNewRecipe(t *testing.T) {
 		ingrs,
 	)
 
-	stepsCollection := steps.NewSteps()
-	stepsCollection.Add(firstStep)
-	stepsCollection.Add(lastStep)
+	stepsCollection := []step.Step{}
+	stepsCollection = append(stepsCollection, firstStep)
+	stepsCollection = append(stepsCollection, lastStep)
+
 	directions := direction.NewDirection(stepsCollection)
 
 	intro := Introduction("Receita de teste")

@@ -2,8 +2,7 @@ package recipe
 
 import (
 	d "github.com/matheuslc/guiomar/src/direction"
-	"github.com/matheuslc/guiomar/src/ingredients"
-	ingrs "github.com/matheuslc/guiomar/src/ingredients"
+	"github.com/matheuslc/guiomar/src/ingredient"
 	m "github.com/matheuslc/guiomar/src/measurements"
 )
 
@@ -13,14 +12,14 @@ type Introduction string
 // Recipe defines the structure of a recipe.
 type Recipe interface {
 	Introduction() Introduction
-	Ingredients() ingredients.Ingredients
+	Ingredients() []ingredient.Ingredient
 	Direction() d.Direction
 }
 
 // Recipe defines how an recipe is
 type recipe struct {
 	introduction    Introduction
-	ingredients     ingredients.Ingredients
+	ingredients     []ingredient.Ingredient
 	direction       d.Direction
 	cookDuration    m.CookDuration
 	preparationTime m.PreparationTime
@@ -31,7 +30,7 @@ type recipe struct {
 // NewRecipe creates a valid recipe
 func NewRecipe(
 	introduction Introduction,
-	ingredients ingrs.Ingredients,
+	ingredients []ingredient.Ingredient,
 	direction d.Direction,
 	cookDuration m.CookDuration,
 	prepartionTime m.PreparationTime,
@@ -49,7 +48,7 @@ func NewRecipe(
 	}, nil
 }
 
-func (r recipe) Ingredients() ingredients.Ingredients {
+func (r recipe) Ingredients() []ingredient.Ingredient {
 	return r.ingredients
 }
 

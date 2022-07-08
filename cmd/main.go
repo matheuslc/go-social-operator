@@ -40,5 +40,8 @@ func main() {
 	}
 
 	fmt.Println("We are online! Running on localhost:7777")
-	server.ListenAndServe()
+	err := server.ListenAndServe()
+	if err != nil {
+		panic(err)
+	}
 }

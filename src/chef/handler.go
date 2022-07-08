@@ -41,6 +41,11 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 		VerifiedEmail(payload.Email),
 	)
 
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Request params are not the expected")
+		return
+	}
+
 	persistedChef, err := repo.Create(chef)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Request params are not the expected")
@@ -55,7 +60,11 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	w.Write(response)
+
+	_, err := w.Write(response)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {

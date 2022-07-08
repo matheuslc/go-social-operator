@@ -1,22 +1,24 @@
 package direction
 
-import ss "github.com/matheuslc/guiomar/src/steps"
+import (
+	"github.com/matheuslc/guiomar/src/step"
+)
 
 // Direction defines the directions of a recipe
 type Direction interface {
-	Steps() ss.Steps
+	Steps() []step.Step
 }
 
 type direction struct {
-	steps ss.Steps
+	steps []step.Step
 }
 
 // NewDirection creates a new direction
-func NewDirection(steps ss.Steps) Direction {
+func NewDirection(steps []step.Step) Direction {
 	return &direction{steps}
 }
 
 // Steps returns the steps of an recipe directions
-func (d direction) Steps() ss.Steps {
+func (d direction) Steps() []step.Step {
 	return d.steps
 }

@@ -9,10 +9,9 @@ import (
 
 func TestNewIngredient(t *testing.T) {
 	food := f.NewFood(
-		f.ScientificName("solanum lycoperscicum"),
 		f.Name("Cherry Tomato"),
-		f.Group("Vegetables"),
-		f.Subgroup("Fruit vegetables"),
+		f.Genus("Vegetables"),
+		f.Specie("Fruit vegetables"),
 	)
 
 	unit := m.Gram(60)
