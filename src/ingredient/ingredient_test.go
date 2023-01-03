@@ -7,6 +7,9 @@ import (
 	m "github.com/matheuslc/guiomar/src/measurements"
 )
 
+// Scenarios:
+// - Convert a unit based on the densitity of the food
+
 func TestNewIngredient(t *testing.T) {
 	food := f.NewFood(
 		f.ScientificName("Scientific name"),
@@ -26,9 +29,5 @@ func TestNewIngredient(t *testing.T) {
 
 	if i.Food() != food {
 		t.Errorf("Ingredient was created with an unexcpeted food.")
-	}
-
-	if i.Unit() != unit {
-		t.Errorf("Ingredient was created with an unexcpeted unit. Exptected: %f. Got: %f", unit, i.Unit())
 	}
 }

@@ -1,6 +1,9 @@
 package food
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+	"github.com/matheuslc/guiomar/src/measurements"
+)
 
 // Name defines the name of a food. Food names can have variations,
 // but they need to have an elected name.
@@ -18,6 +21,8 @@ type Genus string
 type Order string
 
 type Family string
+
+type Amount measurements.Unit
 
 // Food defines the food struct and its properties
 type Food struct {

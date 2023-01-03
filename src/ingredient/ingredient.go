@@ -8,17 +8,17 @@ import (
 // Ingredient interface defiens the power of an ingredient
 type Ingredient interface {
 	Food() food.Food
-	Unit() units.Mensurable
+	Unit() units.Conversor
 }
 
 // ingredient defines an ingredient.
 type ingredient struct {
 	food food.Food
-	unit units.Mensurable
+	unit units.Conversor
 }
 
 // NewIngredient creates a new ingredient
-func NewIngredient(f food.Food, u units.Mensurable) (Ingredient, error) {
+func NewIngredient(f food.Food, u units.Conversor) (Ingredient, error) {
 	return ingredient{
 		food: f,
 		unit: u,
@@ -30,7 +30,7 @@ func (i ingredient) Food() food.Food {
 	return i.food
 }
 
-// Food returns the food of an ingredient
-func (i ingredient) Unit() units.Mensurable {
+// Food returns the food of an ingredient+
+func (i ingredient) Unit() units.Conversor {
 	return i.unit
 }
