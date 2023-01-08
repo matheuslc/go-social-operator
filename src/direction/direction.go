@@ -9,13 +9,17 @@ type Direction interface {
 	Steps() []step.Step
 }
 
+type DirectionPayload struct {
+	Steps []step.StepPayload `json:"steps"`
+}
+
 type direction struct {
 	steps []step.Step
 }
 
 // NewDirection creates a new direction
-func NewDirection(steps []step.Step) Direction {
-	return &direction{steps}
+func NewDirection(steps []step.Step) (Direction, error) {
+	return &direction{steps}, nil
 }
 
 // Steps returns the steps of an recipe directions

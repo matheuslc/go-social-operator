@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guiomar-api
+  namespace: internal
+  labels:
+    app: guiomar-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guiomar-api
+  template:
+    metadata:
+      labels:
+        app: guiomar-api
+    spec:
+      containers:
+      - name: guiomar-api
+        image: guiomar-api-image
+        ports:
+        - containerPort: 3010
+          name: public-api
+        - containerPort: 3011
+          name: metrics
+        env:
+        - name: NEO4J_HOST
+          value: bolt://neo4j-standalone
+        - name: NEO4J_USERNAME
+          value: neo4j
+        - name: NEO4J_PASSWORD
+          value: strongpassword
+        - name: JWT_SALT
+          value: strongsalt
+        - name: JWT_SECRET
+          value: mysecret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: guiomar-api
+  name: guiomar-api
+spec:
+  template:
+    metadata:
+      labels:
+        app: guiomar-api
+  ports:
+  - port: 3010
+    protocol: TCP
+    targetPort: 3010
+    nodePort: 30100
+    name: public-api
+  - port: 3011
+    protocol: TCP
+    targetPort: 3011
+    nodePort: 30101
+    name: metrics
+  selector:
+    app: guiomar-api
+  type: NodePort
+status:
+  loadBalancer: {}

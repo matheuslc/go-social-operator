@@ -53,7 +53,7 @@ func (repo Repository) Save(f Food) (Food, error) {
 		if result.Next() {
 			fmt.Println(result.Record().Values()...)
 			return Food{
-				ID:             uuid.MustParse(result.Record().GetByIndex(0).(string)),
+				id:             uuid.MustParse(result.Record().GetByIndex(0).(string)),
 				ScientificName: ScientificName(result.Record().GetByIndex(1).(string)),
 				Name:           Name(result.Record().GetByIndex(2).(string)),
 				Order:          Order(result.Record().GetByIndex(3).(string)),

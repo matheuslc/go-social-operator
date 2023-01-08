@@ -28,25 +28,31 @@ func TestNewRecipe(t *testing.T) {
 	collection := []ingredient.Ingredient{}
 	ingrs := append(collection, ingr)
 
-	firstStep := step.NewStep(
+	firstStep, err := step.NewStep(
 		step.Description("Corte em pedaços e adicione ao fogo"),
 		units.Minute(2),
-		ingrs,
 	)
+	if err != nil {
+		t.Errorf("Error when creating a new step. Error: %s", err)
+	}
 
-	lastStep := step.NewStep(
+	lastStep, err := step.NewStep(
 		step.Description("Adicione o molho na geladeira"),
 		units.Minute(2),
-		ingrs,
 	)
+
+	if err != nil {
+		t.Errorf("Error when creating a new step. Error: %s", err)
+	}
 
 	stepsCollection := []step.Step{}
 	stepsCollection = append(stepsCollection, firstStep)
 	stepsCollection = append(stepsCollection, lastStep)
 
-	d := direction.NewDirection(stepsCollection)
-	directions := []direction.Direction{}
-	directions = append(directions, d)
+	d, err := direction.NewDirection(stepsCollection)
+	if err != nil {
+		t.Errorf("Error when creating a new direction. Error: %s", err)
+	}
 
 	intro := Introduction("Receita de teste")
 	summary := Summary("Resumo da receita de teste")
@@ -55,7 +61,7 @@ func TestNewRecipe(t *testing.T) {
 		summary,
 		intro,
 		ingrs,
-		directions,
+		d,
 		units.Minute(50),
 		units.PreparationTime(20),
 		units.Serving(6),

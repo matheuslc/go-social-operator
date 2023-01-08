@@ -21,7 +21,7 @@ type Recipe struct {
 	Introduction    Introduction            `json:"introduction"`
 	Summary         Summary                 `json:"summary"`
 	Ingredients     []ingredient.Ingredient `json:"ingredients"`
-	Directions      []direction.Direction   `json:"direction"`
+	Direction       direction.Direction     `json:"direction"`
 	CookDuration    m.Minute                `json:"cook_duration"`
 	PreparationTime m.PreparationTime       `json:"preparation_time"`
 	Serving         m.Serving               `json:"serving"`
@@ -33,7 +33,7 @@ func NewRecipe(
 	summary Summary,
 	introduction Introduction,
 	ingredients []ingredient.Ingredient,
-	directions []direction.Direction,
+	direction direction.Direction,
 	cookDuration m.Minute,
 	prepartionTime m.PreparationTime,
 	serving m.Serving,
@@ -43,7 +43,7 @@ func NewRecipe(
 		Summary:         summary,
 		Introduction:    introduction,
 		Ingredients:     ingredients,
-		Directions:      directions,
+		Direction:       direction,
 		CookDuration:    cookDuration,
 		PreparationTime: prepartionTime,
 		Serving:         serving,

@@ -137,6 +137,13 @@
                 }
             }
         },
+        "ingredient.IngredientPayload": {
+            "type": "object",
+            "properties": {
+                "amount": {},
+                "food": {}
+            }
+        },
         "recipe.createRecipePayload": {
             "type": "object",
             "properties": {
@@ -145,11 +152,15 @@
                 },
                 "directions": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "$ref": "#/definitions/step.StepPayload"
+                    }
                 },
                 "ingredients": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "$ref": "#/definitions/ingredient.IngredientPayload"
+                    }
                 },
                 "introduction": {
                     "type": "string"
@@ -164,6 +175,17 @@
                     "type": "string"
                 },
                 "yield": {
+                    "type": "number"
+                }
+            }
+        },
+        "step.StepPayload": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "duration": {
                     "type": "number"
                 }
             }

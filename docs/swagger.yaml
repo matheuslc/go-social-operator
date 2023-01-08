@@ -23,15 +23,22 @@ definitions:
       specie:
         type: string
     type: object
+  ingredient.IngredientPayload:
+    properties:
+      amount: {}
+      food: {}
+    type: object
   recipe.createRecipePayload:
     properties:
       cook_duration:
         type: number
       directions:
-        items: {}
+        items:
+          $ref: '#/definitions/step.StepPayload'
         type: array
       ingredients:
-        items: {}
+        items:
+          $ref: '#/definitions/ingredient.IngredientPayload'
         type: array
       introduction:
         type: string
@@ -42,6 +49,13 @@ definitions:
       summary:
         type: string
       yield:
+        type: number
+    type: object
+  step.StepPayload:
+    properties:
+      description:
+        type: string
+      duration:
         type: number
     type: object
 host: localhost:7777

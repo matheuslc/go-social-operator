@@ -145,6 +145,13 @@ const docTemplate = `{
                 }
             }
         },
+        "ingredient.IngredientPayload": {
+            "type": "object",
+            "properties": {
+                "amount": {},
+                "food": {}
+            }
+        },
         "recipe.createRecipePayload": {
             "type": "object",
             "properties": {
@@ -153,11 +160,15 @@ const docTemplate = `{
                 },
                 "directions": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "$ref": "#/definitions/step.StepPayload"
+                    }
                 },
                 "ingredients": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "$ref": "#/definitions/ingredient.IngredientPayload"
+                    }
                 },
                 "introduction": {
                     "type": "string"
@@ -172,6 +183,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "yield": {
+                    "type": "number"
+                }
+            }
+        },
+        "step.StepPayload": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "duration": {
                     "type": "number"
                 }
             }

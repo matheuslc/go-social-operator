@@ -7,17 +7,18 @@ import (
 	"github.com/matheuslc/guiomar/src/direction"
 	"github.com/matheuslc/guiomar/src/ingredient"
 	m "github.com/matheuslc/guiomar/src/measurements"
+	"github.com/matheuslc/guiomar/src/step"
 )
 
 type createRecipePayload struct {
-	Summary         Summary                 `json:"summary"`
-	Introduction    Introduction            `json:"introduction"`
-	CookDuration    m.Minute                `json:"cook_duration"`
-	Ingredients     []ingredient.Ingredient `json:"ingredients"`
-	Directions      []direction.Direction   `json:"directions"`
-	PreparationTime m.PreparationTime       `json:"preparation_time"`
-	Serving         m.Serving               `json:"serving"`
-	Yield           m.Yield                 `json:"yield"`
+	Summary         Summary                        `json:"summary"`
+	Introduction    Introduction                   `json:"introduction"`
+	CookDuration    m.Minute                       `json:"cook_duration"`
+	Ingredients     []ingredient.IngredientPayload `json:"ingredients"`
+	Direction       []step.StepPayload             `json:"directions"`
+	PreparationTime m.PreparationTime              `json:"preparation_time"`
+	Serving         m.Serving                      `json:"serving"`
+	Yield           m.Yield                        `json:"yield"`
 }
 
 // NewRecipeHandlerWrapper godoc
@@ -44,11 +45,34 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ingrs, err := convertIngredients(payload.Ingredients)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Request params are not the expected")
+		return
+	}
+
+	stps := make([]step.Step, len(payload.Direction))
+	for i, stp := range payload.Direction {
+		parsed, err := step.NewStep(stp.Description, stp.Duration)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, "Request params are not the expected")
+			return
+		}
+
+		stps[i] = parsed
+	}
+
+	di, err := direction.NewDirection(stps)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Request params are not the expected")
+		return
+	}
+
 	rec, err := NewRecipe(
 		Summary(payload.Summary),
 		Introduction(payload.Introduction),
-		payload.Ingredients,
-		payload.Directions,
+		ingrs,
+		di,
 		m.Minute((payload.CookDuration)),
 		m.PreparationTime(payload.PreparationTime),
 		m.Serving(payload.Serving),
@@ -67,6 +91,20 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, http.StatusOK, persistedRecipe)
+}
+
+func convertIngredients(payload []ingredient.IngredientPayload) ([]ingredient.Ingredient, error) {
+	ingrs := make([]ingredient.Ingredient, len(payload))
+	for i, ingr := range payload {
+		parsed, err := ingredient.NewIngredient(ingr.Food, ingr.Amount)
+		if err != nil {
+			return nil, err
+		}
+
+		ingrs[i] = parsed
+	}
+
+	return ingrs, nil
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {

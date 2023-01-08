@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -31,6 +32,10 @@ func main() {
 	app, _ := context.NewAppContext()
 	router := mux.NewRouter()
 
+	router.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		respondWithJSON(w, 200, map[string]string{"message": "pong"})
+	}).Methods("GET")
+
 	router.HandleFunc("/api/chefs", chef.NewChefHandlerWrapper(app.ChefRepository)).Methods("POST")
 	router.HandleFunc("/api/foods", food.NewFoodHandlerWrapper(app.FoodRepository)).Methods("POST")
 	router.HandleFunc("/api/recipes", food.NewFoodHandlerWrapper(app.FoodRepository)).Methods("POST")
@@ -39,11 +44,23 @@ func main() {
 
 	server := &http.Server{
 		Handler: router,
-		Addr:    ":7777",
+		Addr:    ":3010",
 	}
 
 	fmt.Println("We are online! Running on localhost:7777")
 	err := server.ListenAndServe()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	response, _ := json.Marshal(payload)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+
+	_, err := w.Write(response)
 	if err != nil {
 		panic(err)
 	}
