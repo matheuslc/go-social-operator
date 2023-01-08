@@ -1,61 +1,56 @@
 package recipe
 
 import (
-	d "github.com/matheuslc/guiomar/src/direction"
+	"github.com/google/uuid"
+	"github.com/matheuslc/guiomar/src/direction"
 	"github.com/matheuslc/guiomar/src/ingredient"
 	m "github.com/matheuslc/guiomar/src/measurements"
 )
 
-// Introduction defines an small text describing the recipe
-type Introduction string
-
 // Recipe defines the structure of a recipe.
-type Recipe interface {
-	Introduction() Introduction
-	Ingredients() []ingredient.Ingredient
-	Direction() d.Direction
+type Reciper interface {
+	SummaryHTML() string
 }
 
+type Introduction string
+type Summary string
+
 // Recipe defines how an recipe is
-type recipe struct {
-	introduction    Introduction
-	ingredients     []ingredient.Ingredient
-	direction       d.Direction
-	cookDuration    m.CookDuration
-	preparationTime m.PreparationTime
-	serving         m.Serving
-	yield           m.Yield
+type Recipe struct {
+	ID              uuid.UUID
+	Introduction    Introduction            `json:"introduction"`
+	Summary         Summary                 `json:"summary"`
+	Ingredients     []ingredient.Ingredient `json:"ingredients"`
+	Directions      []direction.Direction   `json:"direction"`
+	CookDuration    m.Minute                `json:"cook_duration"`
+	PreparationTime m.PreparationTime       `json:"preparation_time"`
+	Serving         m.Serving               `json:"serving"`
+	Yield           m.Yield                 `json:"yield"`
 }
 
 // NewRecipe creates a valid recipe
 func NewRecipe(
+	summary Summary,
 	introduction Introduction,
 	ingredients []ingredient.Ingredient,
-	direction d.Direction,
-	cookDuration m.CookDuration,
+	directions []direction.Direction,
+	cookDuration m.Minute,
 	prepartionTime m.PreparationTime,
 	serving m.Serving,
 	yield m.Yield,
 ) (Recipe, error) {
-	return &recipe{
-		introduction:    introduction,
-		ingredients:     ingredients,
-		direction:       direction,
-		cookDuration:    cookDuration,
-		preparationTime: prepartionTime,
-		serving:         serving,
-		yield:           yield,
+	return Recipe{
+		Summary:         summary,
+		Introduction:    introduction,
+		Ingredients:     ingredients,
+		Directions:      directions,
+		CookDuration:    cookDuration,
+		PreparationTime: prepartionTime,
+		Serving:         serving,
+		Yield:           yield,
 	}, nil
 }
 
-func (r recipe) Ingredients() []ingredient.Ingredient {
-	return r.ingredients
-}
-
-func (r recipe) Direction() d.Direction {
-	return r.direction
-}
-
-func (r recipe) Introduction() Introduction {
-	return r.introduction
+func (r Recipe) SummaryHTML() string {
+	return string(r.Summary)
 }

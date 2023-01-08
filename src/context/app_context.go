@@ -7,13 +7,15 @@ import (
 	"github.com/matheuslc/guiomar/src/chef"
 	"github.com/matheuslc/guiomar/src/db"
 	"github.com/matheuslc/guiomar/src/food"
+	"github.com/matheuslc/guiomar/src/recipe"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
 type AppContext struct {
-	Db             neo4j.Driver
-	FoodRepository food.Repository
-	ChefRepository chef.Repository
+	Db               neo4j.Driver
+	FoodRepository   food.Repository
+	ChefRepository   chef.Repository
+	RecipeRepository recipe.Repository
 }
 
 // NewAppContext creates a new app context within all dependencies we currently have.
@@ -26,10 +28,12 @@ func NewAppContext() (AppContext, error) {
 
 	foodRepository := food.Repository{Db: db}
 	chefRepository := chef.Repository{Db: db}
+	recipeRepository := recipe.Repository{Db: db}
 
 	return AppContext{
-		Db:             db,
-		FoodRepository: foodRepository,
-		ChefRepository: chefRepository,
+		Db:               db,
+		FoodRepository:   foodRepository,
+		ChefRepository:   chefRepository,
+		RecipeRepository: recipeRepository,
 	}, nil
 }

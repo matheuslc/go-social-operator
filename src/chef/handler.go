@@ -6,8 +6,8 @@ import (
 )
 
 type createChefPayload struct {
-	Role  `json:"role"`
-	Name  `json:"name"`
+	Role  Role          `json:"role"`
+	Name  Name          `json:"name"`
 	Email VerifiedEmail `json:"email"`
 }
 

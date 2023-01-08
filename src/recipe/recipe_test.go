@@ -44,15 +44,19 @@ func TestNewRecipe(t *testing.T) {
 	stepsCollection = append(stepsCollection, firstStep)
 	stepsCollection = append(stepsCollection, lastStep)
 
-	directions := direction.NewDirection(stepsCollection)
+	d := direction.NewDirection(stepsCollection)
+	directions := []direction.Direction{}
+	directions = append(directions, d)
 
 	intro := Introduction("Receita de teste")
+	summary := Summary("Resumo da receita de teste")
 
 	rec, err := NewRecipe(
+		summary,
 		intro,
 		ingrs,
 		directions,
-		units.CookDuration(50),
+		units.Minute(50),
 		units.PreparationTime(20),
 		units.Serving(6),
 		units.Yield(3),
@@ -62,7 +66,7 @@ func TestNewRecipe(t *testing.T) {
 		t.Errorf("Error when creating a new recipe. Error: %s", err)
 	}
 
-	if rec.Introduction() != intro {
-		t.Errorf("Introduction was not the expected. Expected: %s. Got: %s", intro, rec.Introduction())
+	if rec.Introduction != intro {
+		t.Errorf("Introduction was not the expected. Expected: %s. Got: %s", intro, rec.Introduction)
 	}
 }

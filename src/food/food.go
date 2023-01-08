@@ -14,8 +14,6 @@ type ScientificName string
 
 // Specie defines the scientific specie name
 type Specie string
-
-// Genus defines the scientific genus name
 type Genus string
 
 type Order string

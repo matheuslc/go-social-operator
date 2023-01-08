@@ -78,19 +78,46 @@ const docTemplate = `{
                 ],
                 "responses": {}
             }
+        },
+        "/api/recipes": {
+            "post": {
+                "description": "You just need your name and your e-mail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chef"
+                ],
+                "summary": "Create a new recipe",
+                "parameters": [
+                    {
+                        "description": "Create a new recipe",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/recipe.createRecipePayload"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
         }
     },
     "definitions": {
         "chef.createChefPayload": {
             "type": "object",
             "properties": {
-                "Name": {
-                    "type": "string"
-                },
-                "Role": {
-                    "type": "string"
-                },
                 "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 }
             }
@@ -115,6 +142,29 @@ const docTemplate = `{
                 },
                 "specie": {
                     "type": "string"
+                }
+            }
+        },
+        "recipe.createRecipePayload": {
+            "type": "object",
+            "properties": {
+                "cook_duration": {
+                    "type": "number"
+                },
+                "introduction": {
+                    "type": "string"
+                },
+                "preparation_time": {
+                    "type": "number"
+                },
+                "serving": {
+                    "type": "number"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "yield": {
+                    "type": "number"
                 }
             }
         }

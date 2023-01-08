@@ -1,11 +1,11 @@
 definitions:
   chef.createChefPayload:
     properties:
-      Name:
-        type: string
-      Role:
-        type: string
       email:
+        type: string
+      name:
+        type: string
+      role:
         type: string
     type: object
   food.createFoodPayload:
@@ -22,6 +22,21 @@ definitions:
         type: string
       specie:
         type: string
+    type: object
+  recipe.createRecipePayload:
+    properties:
+      cook_duration:
+        type: number
+      introduction:
+        type: string
+      preparation_time:
+        type: number
+      serving:
+        type: number
+      summary:
+        type: string
+      yield:
+        type: number
     type: object
 host: localhost:7777
 info:
@@ -73,4 +88,22 @@ paths:
       summary: Create a new food
       tags:
       - food
+  /api/recipes:
+    post:
+      consumes:
+      - application/json
+      description: You just need your name and your e-mail
+      parameters:
+      - description: Create a new recipe
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/recipe.createRecipePayload'
+      produces:
+      - application/json
+      responses: {}
+      summary: Create a new recipe
+      tags:
+      - chef
 swagger: "2.0"

@@ -33,6 +33,7 @@ func main() {
 
 	router.HandleFunc("/api/chefs", chef.NewChefHandlerWrapper(app.ChefRepository)).Methods("POST")
 	router.HandleFunc("/api/foods", food.NewFoodHandlerWrapper(app.FoodRepository)).Methods("POST")
+	router.HandleFunc("/api/recipes", food.NewFoodHandlerWrapper(app.FoodRepository)).Methods("POST")
 
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
