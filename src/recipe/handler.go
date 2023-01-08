@@ -5,22 +5,19 @@ import (
 	"net/http"
 
 	"github.com/matheuslc/guiomar/src/direction"
-	"github.com/matheuslc/guiomar/src/food"
 	"github.com/matheuslc/guiomar/src/ingredient"
-	"github.com/matheuslc/guiomar/src/measurements"
 	m "github.com/matheuslc/guiomar/src/measurements"
-	"github.com/matheuslc/guiomar/src/step"
 )
 
 type createRecipePayload struct {
-	Summary         Summary               `json:"summary"`
-	Introduction    Introduction          `json:"introduction"`
-	CookDuration    m.Minute              `json:"cook_duration"`
-	IngredientIDs   []string              `json:"ingredients"`
-	Directions      []direction.Direction `json:"directions"`
-	PreparationTime m.PreparationTime     `json:"preparation_time"`
-	Serving         m.Serving             `json:"serving"`
-	Yield           m.Yield               `json:"yield"`
+	Summary         Summary                 `json:"summary"`
+	Introduction    Introduction            `json:"introduction"`
+	CookDuration    m.Minute                `json:"cook_duration"`
+	Ingredients     []ingredient.Ingredient `json:"ingredients"`
+	Directions      []direction.Direction   `json:"directions"`
+	PreparationTime m.PreparationTime       `json:"preparation_time"`
+	Serving         m.Serving               `json:"serving"`
+	Yield           m.Yield                 `json:"yield"`
 }
 
 // NewRecipeHandlerWrapper godoc
@@ -47,34 +44,11 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	f := food.NewFood(
-		food.ScientificName("Scientific name"),
-		food.Order("order"),
-		food.Family("family"),
-		food.Name("Cherry Tomato"),
-		food.Genus("Vegetables"),
-		food.Specie("Fruit vegetables"),
-	)
-
-	ingrs := []ingredient.Ingredient{}
-	ingr, err := ingredient.NewIngredient(f, m.Gram(60))
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Request params are not the expected")
-		return
-	}
-	ingrs = append(ingrs, ingr)
-
-	st := step.NewStep(step.Description("do this"), measurements.Minute(10), ingrs)
-	stps := []step.Step{}
-	stps = append(stps, st)
-	directions := []direction.Direction{}
-	directions = append(directions, direction.NewDirection(stps))
-
 	rec, err := NewRecipe(
 		Summary(payload.Summary),
 		Introduction(payload.Introduction),
-		ingrs,
-		directions,
+		payload.Ingredients,
+		payload.Directions,
 		m.Minute((payload.CookDuration)),
 		m.PreparationTime(payload.PreparationTime),
 		m.Serving(payload.Serving),

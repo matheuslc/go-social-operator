@@ -27,6 +27,12 @@ definitions:
     properties:
       cook_duration:
         type: number
+      directions:
+        items: {}
+        type: array
+      ingredients:
+        items: {}
+        type: array
       introduction:
         type: string
       preparation_time:

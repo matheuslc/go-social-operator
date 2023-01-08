@@ -151,6 +151,14 @@ const docTemplate = `{
                 "cook_duration": {
                     "type": "number"
                 },
+                "directions": {
+                    "type": "array",
+                    "items": {}
+                },
+                "ingredients": {
+                    "type": "array",
+                    "items": {}
+                },
                 "introduction": {
                     "type": "string"
                 },
