@@ -1,6 +1,7 @@
 package recipe
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -9,6 +10,10 @@ import (
 	"github.com/matheuslc/guiomar/src/measurements"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	log "github.com/sirupsen/logrus"
+)
+
+var (
+	ErrInvalidFoodType = errors.New("the recipe contains an ingredient with an invalid food type")
 )
 
 type Reader interface {
@@ -50,7 +55,7 @@ func (repo Repository) Find(id uuid.UUID) (Recipe, error) {
 			return nil, err
 		}
 
-		var rrr Recipe
+		var parsedRecipe Recipe
 		ingredientsCollection := []ingredient.Ingredient{}
 
 		for result.Next() {
@@ -58,60 +63,14 @@ func (repo Repository) Find(id uuid.UUID) (Recipe, error) {
 			ingredientsNode := result.Record().GetByIndex(2).(neo4j.Node)
 			foods := result.Record().GetByIndex(3).(neo4j.Node)
 
-			var f food.Fooder
-			var u measurements.UnitType
-
-			switch foods.Props()["type"] {
-			case "animal":
-				f = food.Animal{
-					Id:   uuid.MustParse(foods.Props()["id"].(string)),
-					Name: food.Name(foods.Props()["name"].(string)),
-				}
-			case "plant":
-				f = food.Food{
-					Id:             uuid.MustParse(foods.Props()["id"].(string)),
-					ScientificName: food.ScientificName(foods.Props()["scientific_name"].(string)),
-					Order:          food.Order(foods.Props()["order"].(string)),
-					Name:           food.Name(foods.Props()["name"].(string)),
-					Specie:         food.Specie(foods.Props()["specie"].(string)),
-					Family:         food.Family(foods.Props()["family"].(string)),
-					Genus:          food.Genus(foods.Props()["genus"].(string)),
-				}
-			case "product":
-				f = food.Product{
-					Id:   uuid.MustParse(foods.Props()["id"].(string)),
-					Name: food.Name(foods.Props()["name"].(string)),
-					AverageAmount: measurements.UnitType{
-						Type:  foods.Props()["average_type"].(string),
-						Value: foods.Props()["average_value"].(float64),
-					},
-				}
-			default:
-				f = food.Food{
-					Id:             uuid.MustParse(foods.Props()["id"].(string)),
-					ScientificName: food.ScientificName(foods.Props()["scientific_name"].(string)),
-					Order:          food.Order(foods.Props()["order"].(string)),
-					Name:           food.Name(foods.Props()["name"].(string)),
-					Specie:         food.Specie(foods.Props()["specie"].(string)),
-					Family:         food.Family(foods.Props()["family"].(string)),
-					Genus:          food.Genus(foods.Props()["genus"].(string)),
-				}
-			}
-
-			u = measurements.UnitType{
-				Type:  ingredientsNode.Props()["unit_type"].(string),
-				Value: ingredientsNode.Props()["amount"].(float64),
-			}
-
-			parsedIngredient, err := ingredient.NewIngredient(f, u)
+			parsed, err := parseIngredient(ingredientsNode, foods)
 			if err != nil {
-				log.Error(err)
 				return nil, err
 			}
 
-			ingredientsCollection = append(ingredientsCollection, parsedIngredient)
+			ingredientsCollection = append(ingredientsCollection, parsed)
 
-			rrr = Recipe{
+			parsedRecipe = Recipe{
 				ID:           uuid.MustParse(r.Props()["id"].(string)),
 				Summary:      Summary(r.Props()["summary"].(string)),
 				Introduction: Introduction(r.Props()["introduction"].(string)),
@@ -120,7 +79,7 @@ func (repo Repository) Find(id uuid.UUID) (Recipe, error) {
 			}
 		}
 
-		return rrr, nil
+		return parsedRecipe, nil
 	})
 
 	if err != nil {
@@ -198,4 +157,51 @@ func (repo Repository) Save(r Recipe, ingredientRepository ingredient.WriterTran
 	}
 
 	return nil
+}
+
+func parseIngredient(ingredientsNode neo4j.Node, foods neo4j.Node) (ingredient.Ingredient, error) {
+	var f food.Fooder
+	var u measurements.UnitType
+
+	switch foods.Props()["type"] {
+	case "animal":
+		f = food.Animal{
+			Id:   uuid.MustParse(foods.Props()["id"].(string)),
+			Name: food.Name(foods.Props()["name"].(string)),
+		}
+	case "plant":
+		f = food.Plant{
+			Id:             uuid.MustParse(foods.Props()["id"].(string)),
+			ScientificName: food.ScientificName(foods.Props()["scientific_name"].(string)),
+			Order:          food.Order(foods.Props()["order"].(string)),
+			Name:           food.Name(foods.Props()["name"].(string)),
+			Specie:         food.Specie(foods.Props()["specie"].(string)),
+			Family:         food.Family(foods.Props()["family"].(string)),
+			Genus:          food.Genus(foods.Props()["genus"].(string)),
+		}
+	case "product":
+		f = food.Product{
+			Id:   uuid.MustParse(foods.Props()["id"].(string)),
+			Name: food.Name(foods.Props()["name"].(string)),
+			AverageAmount: measurements.UnitType{
+				Type:  foods.Props()["average_type"].(string),
+				Value: foods.Props()["average_value"].(float64),
+			},
+		}
+	default:
+		return nil, ErrInvalidFoodType
+	}
+
+	u = measurements.UnitType{
+		Type:  ingredientsNode.Props()["unit_type"].(string),
+		Value: ingredientsNode.Props()["amount"].(float64),
+	}
+
+	parsedIngredient, err := ingredient.NewIngredient(f, u)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+
+	return parsedIngredient, nil
 }

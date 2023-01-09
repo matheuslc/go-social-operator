@@ -4,33 +4,33 @@ import (
 	m "github.com/matheuslc/guiomar/src/measurements"
 )
 
-// Description is an text used as description of an step
-type Description string
-
 // Step defines one step an recipe directions.
 type Step interface {
-	Description() Description
+	Description() string
 }
 
 type StepPayload struct {
-	Description Description `json:"description"`
-	Duration    m.Minute    `json:"duration"`
+	Description string   `json:"description"`
+	Duration    m.Minute `json:"duration"`
+	Order       int      `json:"order"`
 }
 
 type step struct {
-	description Description
+	description string
 	duration    m.Minute
+	order       int
 }
 
 // NewStep creates a new step
-func NewStep(description Description, duration m.Minute) (Step, error) {
+func NewStep(description string, duration m.Minute, order int) (Step, error) {
 	return &step{
 		description,
 		duration,
+		order,
 	}, nil
 }
 
 // Description returns the description of the step
-func (s step) Description() Description {
+func (s step) Description() string {
 	return s.description
 }

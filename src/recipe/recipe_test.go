@@ -33,16 +33,18 @@ func TestNewRecipe(t *testing.T) {
 	ingrs := append(collection, ingr)
 
 	firstStep, err := step.NewStep(
-		step.Description("Corte em pedaços e adicione ao fogo"),
+		"Corte em pedaços e adicione ao fogo",
 		units.Minute(2),
+		0,
 	)
 	if err != nil {
 		t.Errorf("Error when creating a new step. Error: %s", err)
 	}
 
 	lastStep, err := step.NewStep(
-		step.Description("Adicione o molho na geladeira"),
+		"Adicione o molho na geladeira",
 		units.Minute(2),
+		1,
 	)
 
 	if err != nil {

@@ -58,7 +58,7 @@ func handler(repo Repository, foodRepository food.Repository, ingredientReposito
 
 	stps := make([]step.Step, len(payload.Direction))
 	for i, stp := range payload.Direction {
-		parsed, err := step.NewStep(stp.Description, stp.Duration)
+		parsed, err := step.NewStep(stp.Description, stp.Duration, stp.Order)
 		if err != nil {
 			respondWithError(w, http.StatusBadRequest, "Could not convert steps. Request params are not the expected")
 			return

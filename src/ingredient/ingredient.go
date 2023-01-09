@@ -8,7 +8,7 @@ import (
 
 // Ingredient interface defiens the power of an ingredient
 type Ingredient interface {
-	GetID() string
+	GetID() uuid.UUID
 	Type() string
 	Food() food.Fooder
 	Unit() units.UnitType
@@ -54,6 +54,6 @@ func (i ingredient) Type() string {
 	return i.food.Type()
 }
 
-func (i ingredient) GetID() string {
-	return i.id.String()
+func (i ingredient) GetID() uuid.UUID {
+	return i.id
 }

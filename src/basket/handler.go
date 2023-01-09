@@ -72,6 +72,7 @@ func handler(recipeRepository recipe.Reader, w http.ResponseWriter, r *http.Requ
 		}
 	}
 
+	// Data map to public structures for rest response
 	recipesPublicCollection := []recipe.RecipePublic{}
 	for _, r := range recipeCollection {
 		innerIngredientCollection := []ingredient.IngredientPublic{}

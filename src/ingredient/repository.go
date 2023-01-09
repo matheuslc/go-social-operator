@@ -71,7 +71,7 @@ func (repo Repository) CreateWithTransaction(transaction neo4j.Transaction, ingr
 	} else if ingredientItem.Food().Type() == "plant" {
 		log.Info("creating ingredient -> plant food relantionship")
 		_, err = transaction.Run(
-			"MATCH (i:Ingredient), (f:Food) WHERE i.id = $ingredient_id AND f.id = $food_id CREATE (i)-[uf:USE_FOOD]->(f)",
+			"MATCH (i:Ingredient), (f:PlantFood) WHERE i.id = $ingredient_id AND f.id = $food_id CREATE (i)-[uf:USE_FOOD]->(f)",
 			map[string]interface{}{
 				"food_id":       ingredientItem.Food().GetID().String(),
 				"ingredient_id": ingredientId,

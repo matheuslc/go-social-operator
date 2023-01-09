@@ -61,7 +61,7 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 			Genus(payload.Genus),
 			Specie(payload.Specie),
 		)
-		persistedFood, err = repo.Save(food.(Food))
+		persistedFood, err = repo.Save(food.(Plant))
 	case "product":
 		food = Product{
 			Name:          payload.Name,

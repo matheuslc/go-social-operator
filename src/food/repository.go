@@ -10,12 +10,12 @@ import (
 )
 
 type Reader interface {
-	find(id uuid.UUID) (Food, error)
+	find(id uuid.UUID) (Fooder, error)
 }
 
 type Writer interface {
-	save(f Food) (Food, error)
-	saveAnimal(f Animal) (Fooder, error)
+	savePlant(f Plant) (Plant, error)
+	saveAnimal(f Animal) (Animal, error)
 	saveProduct(p Product) (Product, error)
 }
 
@@ -32,7 +32,7 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 	})
 	if err != nil {
 		fmt.Printf("Cant start a new Neo4j session. Reason: %s", err)
-		return Food{}, nil
+		return Plant{}, nil
 	}
 
 	defer session.Close()
@@ -62,7 +62,7 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 			return nil, result.Err()
 		case "plant":
 			result, err := transaction.Run(
-				"MATCH (f:Food {id: $id}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type",
+				"MATCH (f:PlantFood {id: $id}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type",
 				map[string]interface{}{
 					"id": id.String(),
 				},
@@ -73,7 +73,7 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 			}
 
 			if result.Next() {
-				return Food{
+				return Plant{
 					Id:             uuid.MustParse(result.Record().GetByIndex(0).(string)),
 					ScientificName: ScientificName(result.Record().GetByIndex(1).(string)),
 					Name:           Name(result.Record().GetByIndex(2).(string)),
@@ -86,7 +86,6 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 
 			return nil, result.Err()
 		case "product":
-			fmt.Println("product case")
 			result, err := transaction.Run(
 				"MATCH (p:ProductFood {id: $id}) RETURN p.id, p.name, p.average_type, p.average_value",
 				map[string]interface{}{
@@ -116,11 +115,11 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 	})
 
 	if err != nil {
-		return Food{}, err
+		return Plant{}, err
 	}
 
 	switch v := (persistedFood).(type) {
-	case Food:
+	case Plant:
 		return v, nil
 	case Animal:
 		return v, nil
@@ -131,24 +130,24 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 		fmt.Println("could not typescast", v)
 	}
 
-	return Food{}, nil
+	return Plant{}, nil
 }
 
-func (repo Repository) Save(f Food) (Food, error) {
+func (repo Repository) Save(f Plant) (Plant, error) {
 	session, err := repo.Db.NewSession(neo4j.SessionConfig{
 		AccessMode:   neo4j.AccessModeWrite,
 		DatabaseName: "neo4j",
 	})
 	if err != nil {
 		fmt.Printf("Cant start a new Neo4j session. Reason: %s", err)
-		return Food{}, nil
+		return Plant{}, nil
 	}
 
 	defer session.Close()
 
 	persistedFood, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (f:Food {id: $id, scientific_name: $scientific_name, name: $name, order: $order, family: $family, genus: $genus, specie: $specie}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type",
+			"CREATE (f:PlantFood {id: $id, scientific_name: $scientific_name, name: $name, order: $order, family: $family, genus: $genus, specie: $specie}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type",
 			map[string]interface{}{
 				"id":              uuid.New().String(),
 				"scientific_name": f.ScientificName,
@@ -166,7 +165,7 @@ func (repo Repository) Save(f Food) (Food, error) {
 		}
 
 		if result.Next() {
-			return Food{
+			return Plant{
 				Id:             uuid.MustParse(result.Record().GetByIndex(0).(string)),
 				ScientificName: ScientificName(result.Record().GetByIndex(1).(string)),
 				Name:           Name(result.Record().GetByIndex(2).(string)),
@@ -181,10 +180,10 @@ func (repo Repository) Save(f Food) (Food, error) {
 	})
 
 	if err != nil {
-		return Food{}, err
+		return Plant{}, err
 	}
 
-	return persistedFood.(Food), nil
+	return persistedFood.(Plant), nil
 }
 
 func (repo Repository) SaveAnimal(f Animal) (Fooder, error) {
@@ -194,7 +193,7 @@ func (repo Repository) SaveAnimal(f Animal) (Fooder, error) {
 	})
 	if err != nil {
 		fmt.Printf("Cant start a new Neo4j session. Reason: %s", err)
-		return Food{}, nil
+		return Plant{}, nil
 	}
 
 	defer session.Close()
@@ -238,7 +237,7 @@ func (repo Repository) SaveProduct(p Product) (Fooder, error) {
 	})
 	if err != nil {
 		fmt.Printf("Cant start a new Neo4j session. Reason: %s", err)
-		return Food{}, nil
+		return Plant{}, nil
 	}
 
 	defer session.Close()

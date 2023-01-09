@@ -14,35 +14,7 @@ type Specie string
 type Genus string
 type Order string
 type Family string
-
-// Animal food
-type AnimalType string
-
 type Amount measurements.Unit
-
-// Food defines the food struct and its properties
-type Food struct {
-	Id             uuid.UUID `json:"id"`
-	ScientificName `json:"scientific_name"`
-	Order          `json:"order"`
-	Family         `json:"family"`
-	Name           `json:"name"`
-	Genus          `json:"genus"`
-	Specie         `json:"specie"`
-}
-
-type Product struct {
-	Id            uuid.UUID `json:"id"`
-	Name          `json:"name"`
-	Brand         string `json:"brand"`
-	AverageAmount measurements.UnitType
-}
-
-type Animal struct {
-	Id         uuid.UUID `json:"id"`
-	Name       `json:"name"`
-	AnimalType `json:"type"`
-}
 
 type FoodPublic struct {
 	ID   string `json:"id"`
@@ -59,62 +31,4 @@ type Fooder interface {
 type FindFoodPayload struct {
 	ID   string `json:"id"`
 	Type string `json:"type"`
-}
-
-// NewFood creates a new food struct with requireds params
-func NewVegetalFood(sn ScientificName, o Order, f Family, n Name, g Genus, sp Specie) Food {
-	return Food{
-		ScientificName: sn,
-		Order:          o,
-		Family:         f,
-		Name:           n,
-		Genus:          g,
-		Specie:         sp,
-	}
-}
-
-// NewAnimal creates a new animal struct with requireds params
-func NewAnimal(n Name, t AnimalType) Animal {
-	return Animal{
-		Name:       n,
-		AnimalType: t,
-	}
-}
-
-// ID returns the ID of a food
-func (f Food) GetID() uuid.UUID {
-	return f.Id
-}
-
-// ID returns the ID of a food
-func (a Animal) GetID() uuid.UUID {
-	return a.Id
-}
-
-func (p Product) GetID() uuid.UUID {
-	return p.Id
-}
-
-func (p Product) Type() string {
-	return "product"
-}
-
-func (f Food) Type() string {
-	return "plant"
-}
-
-func (a Animal) Type() string {
-	return "animal"
-}
-
-func (p Product) GetName() string {
-	return string(p.Name)
-}
-
-func (f Food) GetName() string {
-	return string(f.Name)
-}
-
-func (a Animal) GetName() string {
-	return string(a.Name)
 }
