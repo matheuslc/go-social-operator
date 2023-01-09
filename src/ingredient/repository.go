@@ -38,6 +38,7 @@ func (repo Repository) CreateWithTransaction(transaction neo4j.Transaction, ingr
 		return err
 	}
 
+	fmt.Println("ingredneitn item type", ingredientItem.Food().Type())
 	// Ingredient -> Food relantionship
 	if ingredientItem.Food().Type() == "animal" {
 		log.Info("creating ingredient -> animal food relantionship")
@@ -67,8 +68,8 @@ func (repo Repository) CreateWithTransaction(transaction neo4j.Transaction, ingr
 			log.Error("could not create ingredient -> animal relationship", err)
 			return err
 		}
-	} else {
-		log.Info("creating ingredient -> food relantionship")
+	} else if ingredientItem.Food().Type() == "plant" {
+		log.Info("creating ingredient -> plant food relantionship")
 		_, err = transaction.Run(
 			"MATCH (i:Ingredient), (f:Food) WHERE i.id = $ingredient_id AND f.id = $food_id CREATE (i)-[uf:USE_FOOD]->(f)",
 			map[string]interface{}{
@@ -81,6 +82,23 @@ func (repo Repository) CreateWithTransaction(transaction neo4j.Transaction, ingr
 			log.Error("could not create ingredient -> animal relationship", err)
 			return err
 		}
+	} else if ingredientItem.Food().Type() == "product" {
+		log.Info("creating ingredient -> product food relantionship")
+		_, err = transaction.Run(
+			"MATCH (i:Ingredient), (p:ProductFood) WHERE i.id = $ingredient_id AND p.id = $food_id CREATE (i)-[uf:USE_FOOD]->(p)",
+			map[string]interface{}{
+				"food_id":       ingredientItem.Food().GetID().String(),
+				"ingredient_id": ingredientId,
+			},
+		)
+
+		if err != nil {
+			log.Error("could not create ingredient -> animal relationship", err)
+			return err
+		}
+	} else {
+		log.Error("could not create ingredient -> food relationship, unknown food type")
+		return err
 	}
 
 	return nil

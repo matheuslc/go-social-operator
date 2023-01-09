@@ -1,9 +1,11 @@
 package food
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/matheuslc/guiomar/src/measurements"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
@@ -14,6 +16,7 @@ type Reader interface {
 type Writer interface {
 	save(f Food) (Food, error)
 	saveAnimal(f Animal) (Fooder, error)
+	saveProduct(p Product) (Product, error)
 }
 
 type Repository struct {
@@ -57,7 +60,7 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 			}
 
 			return nil, result.Err()
-		default:
+		case "plant":
 			result, err := transaction.Run(
 				"MATCH (f:Food {id: $id}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type",
 				map[string]interface{}{
@@ -82,6 +85,33 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 			}
 
 			return nil, result.Err()
+		case "product":
+			fmt.Println("product case")
+			result, err := transaction.Run(
+				"MATCH (p:ProductFood {id: $id}) RETURN p.id, p.name, p.average_type, p.average_value",
+				map[string]interface{}{
+					"id": id.String(),
+				},
+			)
+
+			if err != nil {
+				return nil, err
+			}
+
+			if result.Next() {
+				return Product{
+					Id:   uuid.MustParse(result.Record().GetByIndex(0).(string)),
+					Name: Name(result.Record().GetByIndex(1).(string)),
+					AverageAmount: measurements.UnitType{
+						Type:  result.Record().GetByIndex(2).(string),
+						Value: result.Record().GetByIndex(3).(float64),
+					},
+				}, nil
+			}
+
+			return nil, result.Err()
+		default:
+			return nil, errors.New("fatal")
 		}
 	})
 
@@ -94,6 +124,11 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 		return v, nil
 	case Animal:
 		return v, nil
+	case Product:
+		return v, nil
+	default:
+
+		fmt.Println("could not typescast", v)
 	}
 
 	return Food{}, nil
@@ -113,7 +148,7 @@ func (repo Repository) Save(f Food) (Food, error) {
 
 	persistedFood, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (f:Food {id: $id, scientific_name: $scientific_name, name: $name, order: $order, family: $family, genus: $genus, specie: $specie}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie",
+			"CREATE (f:Food {id: $id, scientific_name: $scientific_name, name: $name, order: $order, family: $family, genus: $genus, specie: $specie}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type",
 			map[string]interface{}{
 				"id":              uuid.New().String(),
 				"scientific_name": f.ScientificName,
@@ -122,6 +157,7 @@ func (repo Repository) Save(f Food) (Food, error) {
 				"family":          f.Family,
 				"genus":           f.Genus,
 				"specie":          f.Specie,
+				"type":            f.Type(),
 			},
 		)
 
@@ -193,4 +229,53 @@ func (repo Repository) SaveAnimal(f Animal) (Fooder, error) {
 	}
 
 	return persistedFood.(Animal), nil
+}
+
+func (repo Repository) SaveProduct(p Product) (Fooder, error) {
+	session, err := repo.Db.NewSession(neo4j.SessionConfig{
+		AccessMode:   neo4j.AccessModeWrite,
+		DatabaseName: "neo4j",
+	})
+	if err != nil {
+		fmt.Printf("Cant start a new Neo4j session. Reason: %s", err)
+		return Food{}, nil
+	}
+
+	defer session.Close()
+
+	persistedFood, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"CREATE (f:ProductFood { id: $id, name: $name, type: $type, average_type: $average_type, average_value: $average_value }) RETURN f.id, f.name, f.type, f.average_type, f.average_value",
+			map[string]interface{}{
+				"id":            uuid.New().String(),
+				"name":          p.Name,
+				"type":          p.Type(),
+				"average_type":  p.AverageAmount.Type,
+				"average_value": p.AverageAmount.Value,
+			},
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return Product{
+				Id:   uuid.MustParse(result.Record().GetByIndex(0).(string)),
+				Name: Name(result.Record().GetByIndex(1).(string)),
+				AverageAmount: measurements.UnitType{
+					Type:  result.Record().GetByIndex(3).(string),
+					Value: result.Record().GetByIndex(4).(float64),
+				},
+			}, nil
+		}
+
+		return nil, result.Err()
+	})
+
+	if err != nil {
+		return Product{}, err
+	}
+
+	return persistedFood.(Product), nil
 }

@@ -4,17 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/matheuslc/guiomar/src/measurements"
 )
 
 type createFoodPayload struct {
-	ScientificName ScientificName `json:"scientific_name"`
-	Order          Order          `json:"order"`
-	Family         Family         `json:"family"`
-	Name           Name           `json:"name"`
-	Genus          Genus          `json:"genus"`
-	Specie         Specie         `json:"specie"`
-	Type           string         `json:"type"`
-	AnimalType     string         `json:"animal_type"`
+	ScientificName ScientificName        `json:"scientific_name"`
+	Order          Order                 `json:"order"`
+	Family         Family                `json:"family"`
+	Name           Name                  `json:"name"`
+	Genus          Genus                 `json:"genus"`
+	Specie         Specie                `json:"specie"`
+	Type           string                `json:"type"`
+	AnimalType     string                `json:"animal_type"`
+	AverageAmount  measurements.UnitType `json:"average_amount"`
 }
 
 // NewFoodHandlerWrapper godoc
@@ -49,8 +52,7 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 	case "animal":
 		food = NewAnimal(payload.Name, AnimalType(payload.AnimalType))
 		persistedFood, err = repo.SaveAnimal(food.(Animal))
-
-	default:
+	case "plant":
 		food = NewVegetalFood(
 			ScientificName(payload.ScientificName),
 			Order(payload.Order),
@@ -60,6 +62,15 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 			Specie(payload.Specie),
 		)
 		persistedFood, err = repo.Save(food.(Food))
+	case "product":
+		food = Product{
+			Name:          payload.Name,
+			AverageAmount: payload.AverageAmount,
+		}
+
+		persistedFood, err = repo.SaveProduct(food.(Product))
+	default:
+		fmt.Println("Invalid food type")
 	}
 
 	if err != nil {

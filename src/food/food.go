@@ -22,7 +22,7 @@ type Amount measurements.Unit
 
 // Food defines the food struct and its properties
 type Food struct {
-	Id             uuid.UUID
+	Id             uuid.UUID `json:"id"`
 	ScientificName `json:"scientific_name"`
 	Order          `json:"order"`
 	Family         `json:"family"`
@@ -31,8 +31,15 @@ type Food struct {
 	Specie         `json:"specie"`
 }
 
+type Product struct {
+	Id            uuid.UUID `json:"id"`
+	Name          `json:"name"`
+	Brand         string `json:"brand"`
+	AverageAmount measurements.UnitType
+}
+
 type Animal struct {
-	Id         uuid.UUID
+	Id         uuid.UUID `json:"id"`
 	Name       `json:"name"`
 	AnimalType `json:"type"`
 }
@@ -84,12 +91,24 @@ func (a Animal) GetID() uuid.UUID {
 	return a.Id
 }
 
+func (p Product) GetID() uuid.UUID {
+	return p.Id
+}
+
+func (p Product) Type() string {
+	return "product"
+}
+
 func (f Food) Type() string {
-	return "vegetal"
+	return "plant"
 }
 
 func (a Animal) Type() string {
 	return "animal"
+}
+
+func (p Product) GetName() string {
+	return string(p.Name)
 }
 
 func (f Food) GetName() string {

@@ -177,6 +177,9 @@ const docTemplate = `{
                 "animal_type": {
                     "type": "string"
                 },
+                "average_amount": {
+                    "$ref": "#/definitions/measurements.UnitType"
+                },
                 "family": {
                     "type": "string"
                 },

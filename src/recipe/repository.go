@@ -1,6 +1,7 @@
 package recipe
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -61,15 +62,13 @@ func (repo Repository) Find(id uuid.UUID) (Recipe, error) {
 			var f food.Fooder
 			var u measurements.UnitType
 
-			fmt.Println("type", foods.Props())
-
 			switch foods.Props()["type"] {
 			case "animal":
 				f = food.Animal{
 					Id:   uuid.MustParse(foods.Props()["id"].(string)),
 					Name: food.Name(foods.Props()["name"].(string)),
 				}
-			case "vegetable":
+			case "plant":
 				f = food.Food{
 					Id:             uuid.MustParse(foods.Props()["id"].(string)),
 					ScientificName: food.ScientificName(foods.Props()["scientific_name"].(string)),
@@ -79,11 +78,17 @@ func (repo Repository) Find(id uuid.UUID) (Recipe, error) {
 					Family:         food.Family(foods.Props()["family"].(string)),
 					Genus:          food.Genus(foods.Props()["genus"].(string)),
 				}
-			default:
-				f = Recipe{
-					ID:           uuid.MustParse(foods.Props()["id"].(string)),
-					Introduction: Introduction(foods.Props()["introduction"].(string)),
+			case "product":
+				f = food.Product{
+					Id:   uuid.MustParse(foods.Props()["id"].(string)),
+					Name: food.Name(foods.Props()["name"].(string)),
+					AverageAmount: measurements.UnitType{
+						Type:  foods.Props()["average_type"].(string),
+						Value: foods.Props()["average_value"].(float64),
+					},
 				}
+			default:
+				return nil, errors.New("Unknown food type")
 			}
 
 			u = measurements.UnitType{
