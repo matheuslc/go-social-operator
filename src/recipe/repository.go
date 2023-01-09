@@ -1,7 +1,6 @@
 package recipe
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -88,7 +87,15 @@ func (repo Repository) Find(id uuid.UUID) (Recipe, error) {
 					},
 				}
 			default:
-				return nil, errors.New("Unknown food type")
+				f = food.Food{
+					Id:             uuid.MustParse(foods.Props()["id"].(string)),
+					ScientificName: food.ScientificName(foods.Props()["scientific_name"].(string)),
+					Order:          food.Order(foods.Props()["order"].(string)),
+					Name:           food.Name(foods.Props()["name"].(string)),
+					Specie:         food.Specie(foods.Props()["specie"].(string)),
+					Family:         food.Family(foods.Props()["family"].(string)),
+					Genus:          food.Genus(foods.Props()["genus"].(string)),
+				}
 			}
 
 			u = measurements.UnitType{

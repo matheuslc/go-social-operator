@@ -106,11 +106,17 @@ func handler(recipeRepository recipe.Reader, w http.ResponseWriter, r *http.Requ
 	for _, ing := range ingredientCollection {
 		key := ing.Food.ID
 		if _, ok := unifyIngredients[key]; ok {
-			continue
+			result := unifyIngredients[key].Unit.Value + ing.Unit.Value
+			ing.Unit.Value = result
+
+			unifyIngredients[key] = ing
 		} else {
 			unifyIngredients[key] = ing
-			unifiedCollection = append(unifiedCollection, ing)
 		}
+	}
+
+	for _, ing := range unifyIngredients {
+		unifiedCollection = append(unifiedCollection, ing)
 	}
 
 	bsk := BasketPublic{Recipes: recipesPublicCollection, Ingredients: unifiedCollection}
