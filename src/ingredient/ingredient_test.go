@@ -11,7 +11,7 @@ import (
 // - Convert a unit based on the densitity of the food
 
 func TestNewIngredient(t *testing.T) {
-	food := f.NewFood(
+	food := f.NewVegetalFood(
 		f.ScientificName("Scientific name"),
 		f.Order("order"),
 		f.Family("family"),
@@ -20,7 +20,11 @@ func TestNewIngredient(t *testing.T) {
 		f.Specie("Fruit vegetables"),
 	)
 
-	unit := m.Gram(60)
+	unit := m.UnitType{
+		Type:  "gram",
+		Value: 60,
+	}
+
 	i, err := NewIngredient(food, unit)
 
 	if err != nil {

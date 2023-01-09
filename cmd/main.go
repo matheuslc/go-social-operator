@@ -5,11 +5,15 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/matheuslc/guiomar/src/basket"
 	"github.com/matheuslc/guiomar/src/chef"
 	"github.com/matheuslc/guiomar/src/context"
 	"github.com/matheuslc/guiomar/src/food"
+	"github.com/matheuslc/guiomar/src/recipe"
 
 	"github.com/gorilla/mux"
+
+	log "github.com/sirupsen/logrus"
 
 	_ "github.com/matheuslc/guiomar/docs"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -27,8 +31,9 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host localhost:7777
+// @host localhost:3010
 func main() {
+	log.SetReportCaller(true)
 	app, _ := context.NewAppContext()
 	router := mux.NewRouter()
 
@@ -38,7 +43,8 @@ func main() {
 
 	router.HandleFunc("/api/chefs", chef.NewChefHandlerWrapper(app.ChefRepository)).Methods("POST")
 	router.HandleFunc("/api/foods", food.NewFoodHandlerWrapper(app.FoodRepository)).Methods("POST")
-	router.HandleFunc("/api/recipes", food.NewFoodHandlerWrapper(app.FoodRepository)).Methods("POST")
+	router.HandleFunc("/api/recipes", recipe.NewRecipeHandlerWrapper(app.RecipeRepository, app.FoodRepository, app.IngredientRepository)).Methods("POST")
+	router.HandleFunc("/api/basket", basket.NewBasketHandlerWerapper(app.RecipeRepository)).Methods("POST")
 
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 

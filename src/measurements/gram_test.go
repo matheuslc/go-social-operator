@@ -3,14 +3,19 @@ package measurements
 import "testing"
 
 func TestGramConversion(t *testing.T) {
-	unit := Gram(480)
+	gram := Gram(480)
 
-	converted, err := unit.Convert(Cup(0))
+	toCup := UnitType{
+		Type:  "cup",
+		Value: 2,
+	}
+
+	converted, err := gram.Convert(toCup)
 	if err != nil {
 		t.Errorf("Cannot convert unit. Error %s", err)
 	}
 
-	if converted.ValueOf() != 2 {
-		t.Errorf("Expected 2, got %f", converted)
+	if converted.ValueOf() != "2.000000" {
+		t.Errorf("Expected 2, got %s", converted.ValueOf())
 	}
 }

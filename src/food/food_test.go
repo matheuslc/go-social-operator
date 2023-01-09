@@ -10,7 +10,7 @@ func TestNewFood(t *testing.T) {
 	genus := Genus("Solanum")
 	specie := Specie("S. lycopersicum")
 
-	food := NewFood(
+	food := NewVegetalFood(
 		sn,
 		order,
 		family,

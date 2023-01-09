@@ -25,6 +25,33 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/basket": {
+            "post": {
+                "description": "List the recipes you want",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "basket"
+                ],
+                "summary": "Create a new basket based on many recipes",
+                "parameters": [
+                    {
+                        "description": "create a new basket based on some payload",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/basket.basketPayload"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/chefs": {
             "post": {
                 "description": "You just need your name and your e-mail",
@@ -108,6 +135,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "basket.basketPayload": {
+            "type": "object",
+            "properties": {
+                "recipes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "chef.createChefPayload": {
             "type": "object",
             "properties": {
@@ -122,9 +160,23 @@ const docTemplate = `{
                 }
             }
         },
+        "food.FindFoodPayload": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "food.createFoodPayload": {
             "type": "object",
             "properties": {
+                "animal_type": {
+                    "type": "string"
+                },
                 "family": {
                     "type": "string"
                 },
@@ -142,21 +194,39 @@ const docTemplate = `{
                 },
                 "specie": {
                     "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
         "ingredient.IngredientPayload": {
             "type": "object",
             "properties": {
-                "amount": {},
-                "food": {}
+                "amount": {
+                    "$ref": "#/definitions/measurements.UnitType"
+                },
+                "food": {
+                    "$ref": "#/definitions/food.FindFoodPayload"
+                }
+            }
+        },
+        "measurements.UnitType": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
             }
         },
         "recipe.createRecipePayload": {
             "type": "object",
             "properties": {
                 "cook_duration": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "directions": {
                     "type": "array",
@@ -174,16 +244,16 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "preparation_time": {
-                    "type": "number"
+                    "$ref": "#/definitions/time.Duration"
                 },
                 "serving": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "summary": {
                     "type": "string"
                 },
                 "yield": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -194,9 +264,28 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "duration": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
+        },
+        "time.Duration": {
+            "type": "integer",
+            "enum": [
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
+                3600000000000
+            ],
+            "x-enum-varnames": [
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour"
+            ]
         }
     }
 }`
@@ -204,7 +293,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:7777",
+	Host:             "localhost:3010",
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Guiomar API",

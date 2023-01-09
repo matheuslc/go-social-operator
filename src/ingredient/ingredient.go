@@ -1,29 +1,38 @@
 package ingredient
 
 import (
+	"github.com/google/uuid"
 	food "github.com/matheuslc/guiomar/src/food"
 	units "github.com/matheuslc/guiomar/src/measurements"
 )
 
 // Ingredient interface defiens the power of an ingredient
 type Ingredient interface {
+	GetID() string
+	Type() string
 	Food() food.Fooder
-	Unit() units.Conversor
+	Unit() units.UnitType
+}
+
+type IngredientPublic struct {
+	Food food.FoodPublic `json:"food"`
+	Unit units.UnitType  `json:"unit"`
 }
 
 type IngredientPayload struct {
-	Food   food.Fooder     `json:"food"`
-	Amount units.Conversor `json:"amount"`
+	Food   food.FindFoodPayload `json:"food"`
+	Amount units.UnitType       `json:"amount"`
 }
 
 // ingredient defines an ingredient.
 type ingredient struct {
+	id   uuid.UUID
 	food food.Fooder
-	unit units.Conversor
+	unit units.UnitType
 }
 
 // NewIngredient creates a new ingredient
-func NewIngredient(f food.Fooder, u units.Conversor) (Ingredient, error) {
+func NewIngredient(f food.Fooder, u units.UnitType) (Ingredient, error) {
 	return ingredient{
 		food: f,
 		unit: u,
@@ -36,6 +45,15 @@ func (i ingredient) Food() food.Fooder {
 }
 
 // Food returns the food of an ingredient+
-func (i ingredient) Unit() units.Conversor {
+func (i ingredient) Unit() units.UnitType {
 	return i.unit
+}
+
+// Food returns the food of an ingredient+
+func (i ingredient) Type() string {
+	return i.food.Type()
+}
+
+func (i ingredient) GetID() string {
+	return i.id.String()
 }

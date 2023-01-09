@@ -13,6 +13,8 @@ type createFoodPayload struct {
 	Name           Name           `json:"name"`
 	Genus          Genus          `json:"genus"`
 	Specie         Specie         `json:"specie"`
+	Type           string         `json:"type"`
+	AnimalType     string         `json:"animal_type"`
 }
 
 // NewFoodHandlerWrapper godoc
@@ -32,23 +34,34 @@ func NewFoodHandlerWrapper(repo Repository) func(http.ResponseWriter, *http.Requ
 }
 
 func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
+	var err error
 	payload := createFoodPayload{}
-	err := json.NewDecoder(r.Body).Decode(&payload)
+	err = json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Request params are not the expected")
 		return
 	}
 
-	food := NewFood(
-		ScientificName(payload.ScientificName),
-		Order(payload.Order),
-		Family(payload.Family),
-		Name(payload.Name),
-		Genus(payload.Genus),
-		Specie(payload.Specie),
-	)
+	var food Fooder
+	var persistedFood Fooder
 
-	persistedFood, err := repo.Save(food)
+	switch payload.Type {
+	case "animal":
+		food = NewAnimal(payload.Name, AnimalType(payload.AnimalType))
+		persistedFood, err = repo.SaveAnimal(food.(Animal))
+
+	default:
+		food = NewVegetalFood(
+			ScientificName(payload.ScientificName),
+			Order(payload.Order),
+			Family(payload.Family),
+			Name(payload.Name),
+			Genus(payload.Genus),
+			Specie(payload.Specie),
+		)
+		persistedFood, err = repo.Save(food.(Food))
+	}
+
 	if err != nil {
 		fmt.Println(err)
 		respondWithError(w, http.StatusBadRequest, "Request params are not the expected")

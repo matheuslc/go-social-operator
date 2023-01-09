@@ -1,4 +1,11 @@
 definitions:
+  basket.basketPayload:
+    properties:
+      recipes:
+        items:
+          type: string
+        type: array
+    type: object
   chef.createChefPayload:
     properties:
       email:
@@ -8,8 +15,17 @@ definitions:
       role:
         type: string
     type: object
+  food.FindFoodPayload:
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+    type: object
   food.createFoodPayload:
     properties:
+      animal_type:
+        type: string
       family:
         type: string
       genus:
@@ -22,16 +38,27 @@ definitions:
         type: string
       specie:
         type: string
+      type:
+        type: string
     type: object
   ingredient.IngredientPayload:
     properties:
-      amount: {}
-      food: {}
+      amount:
+        $ref: '#/definitions/measurements.UnitType'
+      food:
+        $ref: '#/definitions/food.FindFoodPayload'
+    type: object
+  measurements.UnitType:
+    properties:
+      type:
+        type: string
+      value:
+        type: number
     type: object
   recipe.createRecipePayload:
     properties:
       cook_duration:
-        type: number
+        type: integer
       directions:
         items:
           $ref: '#/definitions/step.StepPayload'
@@ -43,22 +70,38 @@ definitions:
       introduction:
         type: string
       preparation_time:
-        type: number
+        $ref: '#/definitions/time.Duration'
       serving:
-        type: number
+        type: integer
       summary:
         type: string
       yield:
-        type: number
+        type: integer
     type: object
   step.StepPayload:
     properties:
       description:
         type: string
       duration:
-        type: number
+        type: integer
     type: object
-host: localhost:7777
+  time.Duration:
+    enum:
+    - 1
+    - 1000
+    - 1000000
+    - 1000000000
+    - 60000000000
+    - 3600000000000
+    type: integer
+    x-enum-varnames:
+    - Nanosecond
+    - Microsecond
+    - Millisecond
+    - Second
+    - Minute
+    - Hour
+host: localhost:3010
 info:
   contact:
     email: mematheuslc@gmail.com
@@ -72,6 +115,24 @@ info:
   title: Guiomar API
   version: "1.0"
 paths:
+  /api/basket:
+    post:
+      consumes:
+      - application/json
+      description: List the recipes you want
+      parameters:
+      - description: create a new basket based on some payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/basket.basketPayload'
+      produces:
+      - application/json
+      responses: {}
+      summary: Create a new basket based on many recipes
+      tags:
+      - basket
   /api/chefs:
     post:
       consumes:

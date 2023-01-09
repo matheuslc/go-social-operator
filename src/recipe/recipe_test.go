@@ -14,7 +14,7 @@ import (
 
 func TestNewRecipe(t *testing.T) {
 	foodName := food.Name("Cherry tomato")
-	food := food.NewFood(
+	food := food.NewVegetalFood(
 		food.ScientificName("Solanum lycopersicum var. cerasiforme"),
 		food.Order("Solanales"),
 		food.Family("Solanaceae"),
@@ -23,7 +23,11 @@ func TestNewRecipe(t *testing.T) {
 		food.Specie("Cherry tomato"),
 	)
 
-	grams := units.Gram(10)
+	grams := units.UnitType{
+		Type:  "gram",
+		Value: 60,
+	}
+
 	ingr, _ := ingredient.NewIngredient(food, grams)
 	collection := []ingredient.Ingredient{}
 	ingrs := append(collection, ingr)
@@ -62,10 +66,10 @@ func TestNewRecipe(t *testing.T) {
 		intro,
 		ingrs,
 		d,
-		units.Minute(50),
-		units.PreparationTime(20),
-		units.Serving(6),
-		units.Yield(3),
+		50,
+		20,
+		6,
+		3,
 	)
 
 	if err != nil {
