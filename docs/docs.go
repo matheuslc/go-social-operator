@@ -52,6 +52,33 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/api/category": {
+            "post": {
+                "description": "You just need your name and your e-mail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chef"
+                ],
+                "summary": "Create a new category",
+                "parameters": [
+                    {
+                        "description": "Create a new category",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/category.CreateCategoryPayload"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/chefs": {
             "post": {
                 "description": "You just need your name and your e-mail",
@@ -146,6 +173,22 @@ const docTemplate = `{
                 }
             }
         },
+        "category.CreateCategoryPayload": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "category.SetCategoryPayload": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "chef.createChefPayload": {
             "type": "object",
             "properties": {
@@ -228,6 +271,9 @@ const docTemplate = `{
         "recipe.createRecipePayload": {
             "type": "object",
             "properties": {
+                "category": {
+                    "$ref": "#/definitions/category.SetCategoryPayload"
+                },
                 "cook_duration": {
                     "type": "integer"
                 },
@@ -267,6 +313,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "duration": {
+                    "type": "integer"
+                },
+                "order": {
                     "type": "integer"
                 }
             }

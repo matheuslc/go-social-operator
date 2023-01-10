@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/matheuslc/guiomar/src/category"
 	"github.com/matheuslc/guiomar/src/chef"
 	"github.com/matheuslc/guiomar/src/db"
 	"github.com/matheuslc/guiomar/src/food"
@@ -18,6 +19,7 @@ type AppContext struct {
 	ChefRepository       chef.Repository
 	RecipeRepository     recipe.Repository
 	IngredientRepository ingredient.Repository
+	CategoryRepository   category.Repository
 }
 
 // NewAppContext creates a new app context within all dependencies we currently have.
@@ -32,6 +34,7 @@ func NewAppContext() (AppContext, error) {
 	chefRepository := chef.Repository{Db: db}
 	recipeRepository := recipe.Repository{Db: db}
 	ingredientRepository := ingredient.Repository{Db: db}
+	categoryRepository := category.Repository{Db: db}
 
 	return AppContext{
 		Db:                   db,
@@ -39,5 +42,6 @@ func NewAppContext() (AppContext, error) {
 		ChefRepository:       chefRepository,
 		RecipeRepository:     recipeRepository,
 		IngredientRepository: ingredientRepository,
+		CategoryRepository:   categoryRepository,
 	}, nil
 }

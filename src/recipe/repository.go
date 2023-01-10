@@ -146,7 +146,18 @@ func (repo Repository) Save(r Recipe, ingredientRepository ingredient.WriterTran
 				}
 			}
 
-			return nil, nil
+			// Relantionship with category
+			_, err = transaction.Run(
+				"MATCH (r:Recipe), (c:Category) WHERE r.id = $recipe_id AND c.id = $category_id CREATE (r)-[ui:USE_CATEGORY]->(c)",
+				map[string]interface{}{
+					"recipe_id":   recipeId,
+					"category_id": r.Category.ID,
+				},
+			)
+
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		return nil, result.Err()

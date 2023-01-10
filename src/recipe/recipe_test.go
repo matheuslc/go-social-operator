@@ -3,6 +3,8 @@ package recipe
 import (
 	"testing"
 
+	"github.com/google/uuid"
+	"github.com/matheuslc/guiomar/src/category"
 	"github.com/matheuslc/guiomar/src/direction"
 
 	"github.com/matheuslc/guiomar/src/step"
@@ -62,11 +64,16 @@ func TestNewRecipe(t *testing.T) {
 
 	intro := Introduction("Receita de teste")
 	summary := Summary("Resumo da receita de teste")
+	category := category.Category{
+		ID:   uuid.New(),
+		Name: "fake category",
+	}
 
 	rec, err := NewRecipe(
 		summary,
 		intro,
 		ingrs,
+		category,
 		d,
 		50,
 		20,

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/matheuslc/guiomar/src/category"
 	"github.com/matheuslc/guiomar/src/direction"
 	"github.com/matheuslc/guiomar/src/food"
 	"github.com/matheuslc/guiomar/src/ingredient"
@@ -20,6 +21,7 @@ type createRecipePayload struct {
 	CookDuration    m.Minute                       `json:"cook_duration"`
 	Ingredients     []ingredient.IngredientPayload `json:"ingredients"`
 	Direction       []step.StepPayload             `json:"directions"`
+	Category        category.SetCategoryPayload    `json:"category"`
 	PreparationTime time.Duration                  `json:"preparation_time"`
 	Serving         int64                          `json:"serving"`
 	Yield           int64                          `json:"yield"`
@@ -33,15 +35,15 @@ type createRecipePayload struct {
 // @Produce      application/json
 // @Param        body body createRecipePayload true "Create a new recipe"
 // @Router       /api/recipes [post]
-func NewRecipeHandlerWrapper(repo Repository, foodRepository food.Repository, ingredientRepository ingredient.Repository) func(http.ResponseWriter, *http.Request) {
+func NewRecipeHandlerWrapper(repo Repository, foodRepository food.Repository, ingredientRepository ingredient.Repository, categoryRepository category.Reader) func(http.ResponseWriter, *http.Request) {
 	// there are known race conditions using a closure
 	// make sure to test and measure it!
 	return func(w http.ResponseWriter, r *http.Request) {
-		handler(repo, foodRepository, ingredientRepository, w, r)
+		handler(repo, foodRepository, ingredientRepository, categoryRepository, w, r)
 	}
 }
 
-func handler(repo Repository, foodRepository food.Repository, ingredientRepository ingredient.Repository, w http.ResponseWriter, r *http.Request) {
+func handler(repo Repository, foodRepository food.Repository, ingredientRepository ingredient.Repository, categoryRepository category.Reader, w http.ResponseWriter, r *http.Request) {
 	payload := createRecipePayload{}
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil {
@@ -73,10 +75,17 @@ func handler(repo Repository, foodRepository food.Repository, ingredientReposito
 		return
 	}
 
+	cat, err := categoryRepository.Find(uuid.MustParse(payload.Category.ID))
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "could not find the category")
+		return
+	}
+
 	rec, err := NewRecipe(
 		Summary(payload.Summary),
 		Introduction(payload.Introduction),
 		ingrs,
+		cat,
 		di,
 		m.Minute((payload.CookDuration)),
 		payload.PreparationTime,
@@ -95,6 +104,7 @@ func handler(repo Repository, foodRepository food.Repository, ingredientReposito
 		return
 	}
 
+	// Link recipe to category
 	respondWithJSON(w, http.StatusOK, map[string]string{"ok": "true"})
 }
 
