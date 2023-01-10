@@ -49,10 +49,10 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 	var persistedFood Fooder
 
 	switch payload.Type {
-	case "animal":
+	case string(FoodTypeAnimal):
 		food = NewAnimal(payload.Name, AnimalType(payload.AnimalType))
 		persistedFood, err = repo.SaveAnimal(food.(Animal))
-	case "plant":
+	case string(FoodTypePlant):
 		food = NewVegetalFood(
 			ScientificName(payload.ScientificName),
 			Order(payload.Order),
@@ -63,7 +63,7 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 			payload.AverageAmount,
 		)
 		persistedFood, err = repo.Save(food.(Plant))
-	case "product":
+	case string(FoodTypeProduct):
 		food = Product{
 			Name:          payload.Name,
 			AverageAmount: payload.AverageAmount,

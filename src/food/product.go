@@ -17,7 +17,7 @@ func (p Product) GetID() uuid.UUID {
 }
 
 func (p Product) Type() string {
-	return "product"
+	return string(FoodTypeProduct)
 }
 
 func (p Product) GetName() string {

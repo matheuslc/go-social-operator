@@ -79,6 +79,7 @@ func handler(repo Repository, foodRepository food.Repository, ingredientReposito
 
 	cat, err := categoryRepository.Find(uuid.MustParse(payload.Category.ID))
 	if err != nil {
+		fmt.Println("err", err)
 		respondWithError(w, http.StatusBadRequest, "could not find the category")
 		return
 	}
@@ -103,6 +104,7 @@ func handler(repo Repository, foodRepository food.Repository, ingredientReposito
 
 	err = repo.Save(rec, ingredientRepository)
 	if err != nil {
+		fmt.Println("err", err)
 		respondWithError(w, http.StatusInternalServerError, "could not save recipe")
 		return
 	}

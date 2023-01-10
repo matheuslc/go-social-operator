@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/matheuslc/guiomar/src/food"
 	"github.com/matheuslc/guiomar/src/ingredient"
 	"github.com/matheuslc/guiomar/src/measurements"
 	"github.com/matheuslc/guiomar/src/recipe"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type basketPayload struct {
@@ -46,6 +49,7 @@ func handler(recipeRepository recipe.Reader, w http.ResponseWriter, r *http.Requ
 	for index, recipeID := range payload.Recipes {
 		persitedRecipe, err := recipeRepository.Find(uuid.MustParse(recipeID))
 		if err != nil {
+			log.Errorf("could find out the recipe. Err: %v", err)
 			respondWithError(w, http.StatusBadRequest, "Could not find recipe")
 			return
 		}
@@ -58,9 +62,10 @@ func handler(recipeRepository recipe.Reader, w http.ResponseWriter, r *http.Requ
 		for _, ing := range recipe.Ingredients {
 			ingredientPublic := ingredient.IngredientPublic{
 				Food: food.FoodPublic{
-					ID:   ing.Food().GetID().String(),
-					Name: ing.Food().GetName(),
-					Type: ing.Food().Type(),
+					ID:            ing.Food().GetID().String(),
+					Name:          ing.Food().GetName(),
+					Type:          ing.Food().Type(),
+					AverageAmount: ing.Food().Average(),
 				},
 				Unit: measurements.UnitType{
 					Type:  ing.Unit().Type,
@@ -79,9 +84,10 @@ func handler(recipeRepository recipe.Reader, w http.ResponseWriter, r *http.Requ
 		for _, ing := range r.Ingredients {
 			ingredientPublic := ingredient.IngredientPublic{
 				Food: food.FoodPublic{
-					ID:   ing.Food().GetID().String(),
-					Name: ing.Food().GetName(),
-					Type: ing.Food().Type(),
+					ID:            ing.Food().GetID().String(),
+					Name:          ing.Food().GetName(),
+					Type:          ing.Food().Type(),
+					AverageAmount: ing.Food().Average(),
 				},
 				Unit: measurements.UnitType{
 					Type:  ing.Unit().Type,
@@ -93,12 +99,16 @@ func handler(recipeRepository recipe.Reader, w http.ResponseWriter, r *http.Requ
 		}
 
 		recipesPublicCollection = append(recipesPublicCollection, recipe.RecipePublic{
-			ID:           r.ID,
-			Introduction: string(r.Introduction),
-			Ingredients:  innerIngredientCollection,
-			Summary:      string(r.Summary),
-			Serving:      r.Serving,
-			Yield:        r.Yield,
+			ID:            r.ID,
+			Introduction:  string(r.Introduction),
+			Ingredients:   innerIngredientCollection,
+			Summary:       string(r.Summary),
+			Serving:       r.Serving,
+			Yield:         r.Yield,
+			Category:      r.Category,
+			Direction:     r.Direction,
+			CookDuration:  time.Duration(r.CookDuration),
+			AverageAmount: r.AverageAmount,
 		})
 	}
 

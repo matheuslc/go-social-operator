@@ -39,7 +39,7 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 
 	persistedFood, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		switch foodType {
-		case "animal":
+		case string(FoodTypeAnimal):
 			result, err := transaction.Run(
 				"MATCH (f:AnimalFood {id: $id}) RETURN f.id, f.name, f.type",
 				map[string]interface{}{
@@ -60,7 +60,7 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 			}
 
 			return nil, result.Err()
-		case "plant":
+		case string(FoodTypePlant):
 			result, err := transaction.Run(
 				"MATCH (f:PlantFood {id: $id}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type",
 				map[string]interface{}{
@@ -85,7 +85,7 @@ func (repo Repository) Find(id uuid.UUID, foodType string) (Fooder, error) {
 			}
 
 			return nil, result.Err()
-		case "product":
+		case string(FoodTypeProduct):
 			result, err := transaction.Run(
 				"MATCH (p:ProductFood {id: $id}) RETURN p.id, p.name, p.average_type, p.average_value",
 				map[string]interface{}{
@@ -147,7 +147,7 @@ func (repo Repository) Save(f Plant) (Plant, error) {
 
 	persistedFood, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (f:PlantFood {id: $id, scientific_name: $scientific_name, name: $name, order: $order, family: $family, genus: $genus, specie: $specie, average_type: $average_type, average_value: $average_value}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type, f.average_type, f.average_value",
+			"CREATE (f:PlantFood {id: $id, scientific_name: $scientific_name, name: $name, order: $order, family: $family, genus: $genus, specie: $specie, type: $type, average_type: $average_type, average_value: $average_value }) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type, f.average_type, f.average_value",
 			map[string]interface{}{
 				"id":              uuid.New().String(),
 				"scientific_name": f.ScientificName,
@@ -167,6 +167,7 @@ func (repo Repository) Save(f Plant) (Plant, error) {
 		}
 
 		if result.Next() {
+			fmt.Println("values", result.Record().GetByIndex(8))
 			return Plant{
 				Id:             uuid.MustParse(result.Record().GetByIndex(0).(string)),
 				ScientificName: ScientificName(result.Record().GetByIndex(1).(string)),
@@ -176,8 +177,8 @@ func (repo Repository) Save(f Plant) (Plant, error) {
 				Genus:          Genus(result.Record().GetByIndex(5).(string)),
 				Specie:         Specie(result.Record().GetByIndex(6).(string)),
 				AverageAmount: measurements.UnitType{
-					Type:  result.Record().GetByIndex(7).(string),
-					Value: result.Record().GetByIndex(8).(float64),
+					Type:  result.Record().GetByIndex(8).(string),
+					Value: result.Record().GetByIndex(9).(float64),
 				},
 			}, nil
 		}

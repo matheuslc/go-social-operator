@@ -27,7 +27,7 @@ func (a Animal) GetID() uuid.UUID {
 }
 
 func (a Animal) Type() string {
-	return "animal"
+	return string(FoodTypeAnimal)
 }
 
 func (a Animal) GetName() string {

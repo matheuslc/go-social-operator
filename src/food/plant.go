@@ -36,7 +36,7 @@ func (f Plant) GetID() uuid.UUID {
 }
 
 func (f Plant) Type() string {
-	return "plant"
+	return string(FoodTypePlant)
 }
 
 func (f Plant) GetName() string {

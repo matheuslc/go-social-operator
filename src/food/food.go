@@ -16,6 +16,14 @@ type Order string
 type Family string
 type Amount measurements.Unit
 
+type FoodType string
+
+const (
+	FoodTypeAnimal  = FoodType("animal")
+	FoodTypePlant   = FoodType("plant")
+	FoodTypeProduct = FoodType("product")
+)
+
 type FoodPublic struct {
 	ID            string                `json:"id"`
 	Type          string                `json:"type"`

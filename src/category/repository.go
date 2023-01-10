@@ -75,7 +75,7 @@ func (repo Repository) Find(id uuid.UUID) (Category, error) {
 
 	persistedCategory, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH (c:Category {id: $id) RETURN c.id, c.name",
+			"MATCH (c:Category { id: $id }) RETURN c.id, c.name",
 			map[string]interface{}{
 				"id": id.String(),
 			},

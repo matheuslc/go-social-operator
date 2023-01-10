@@ -3,6 +3,7 @@ package ingredient
 import (
 	"fmt"
 
+	"github.com/matheuslc/guiomar/src/food"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	log "github.com/sirupsen/logrus"
 )
@@ -40,7 +41,7 @@ func (repo Repository) CreateWithTransaction(transaction neo4j.Transaction, ingr
 
 	fmt.Println("ingredneitn item type", ingredientItem.Food().Type())
 	// Ingredient -> Food relantionship
-	if ingredientItem.Food().Type() == "animal" {
+	if ingredientItem.Food().Type() == string(food.FoodTypeAnimal) {
 		log.Info("creating ingredient -> animal food relantionship")
 		_, err = transaction.Run(
 			"MATCH (i:Ingredient), (f:AnimalFood) WHERE i.id = $ingredient_id AND f.id = $food_id CREATE (i)-[uf:USE_FOOD]->(f)",
@@ -68,7 +69,7 @@ func (repo Repository) CreateWithTransaction(transaction neo4j.Transaction, ingr
 			log.Error("could not create ingredient -> animal relationship", err)
 			return err
 		}
-	} else if ingredientItem.Food().Type() == "plant" {
+	} else if ingredientItem.Food().Type() == string(food.FoodTypePlant) {
 		log.Info("creating ingredient -> plant food relantionship")
 		_, err = transaction.Run(
 			"MATCH (i:Ingredient), (f:PlantFood) WHERE i.id = $ingredient_id AND f.id = $food_id CREATE (i)-[uf:USE_FOOD]->(f)",
@@ -82,7 +83,7 @@ func (repo Repository) CreateWithTransaction(transaction neo4j.Transaction, ingr
 			log.Error("could not create ingredient -> animal relationship", err)
 			return err
 		}
-	} else if ingredientItem.Food().Type() == "product" {
+	} else if ingredientItem.Food().Type() == string(food.FoodTypeProduct) {
 		log.Info("creating ingredient -> product food relantionship")
 		_, err = transaction.Run(
 			"MATCH (i:Ingredient), (p:ProductFood) WHERE i.id = $ingredient_id AND p.id = $food_id CREATE (i)-[uf:USE_FOOD]->(p)",

@@ -3,6 +3,7 @@ package recipe
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/matheuslc/guiomar/src/food"
@@ -71,11 +72,18 @@ func (repo Repository) Find(id uuid.UUID) (Recipe, error) {
 			ingredientsCollection = append(ingredientsCollection, parsed)
 
 			parsedRecipe = Recipe{
-				ID:           uuid.MustParse(r.Props()["id"].(string)),
-				Summary:      Summary(r.Props()["summary"].(string)),
-				Introduction: Introduction(r.Props()["introduction"].(string)),
-				CookDuration: measurements.Minute(r.Props()["cook_duration"].(int64)),
-				Ingredients:  ingredientsCollection,
+				ID:              uuid.MustParse(r.Props()["id"].(string)),
+				Summary:         Summary(r.Props()["summary"].(string)),
+				Introduction:    Introduction(r.Props()["introduction"].(string)),
+				CookDuration:    measurements.Minute(r.Props()["cook_duration"].(int64)),
+				Yield:           r.Props()["yield"].(int64),
+				PreparationTime: time.Duration(r.Props()["yield"].(int64)),
+				AverageAmount: measurements.UnitType{
+					Type:  r.Props()["average_type"].(string),
+					Value: r.Props()["average_value"].(float64),
+				},
+				Serving:     r.Props()["serving"].(int64),
+				Ingredients: ingredientsCollection,
 			}
 		}
 
@@ -104,7 +112,7 @@ func (repo Repository) Save(r Recipe, ingredientRepository ingredient.WriterTran
 
 	_, err = session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (r:Recipe {id: $id, summary: $summary, introduction: $introduction, cook_duration: $cook_duration, preparation_time: $preparation_time, serving: $serving, yield: $yield, average_type: $average_time, average_value: $average_value}) "+
+			"CREATE (r:Recipe {id: $id, summary: $summary, introduction: $introduction, cook_duration: $cook_duration, preparation_time: $preparation_time, serving: $serving, yield: $yield, average_type: $average_type, average_value: $average_value}) "+
 				"RETURN r.id, r.summary, r.introduction, r.cook_duration, r.preparation_time, r.serving, r.yield, r.average_type, r.average_value",
 			map[string]interface{}{
 				"id":               uuid.New().String(),
@@ -153,7 +161,7 @@ func (repo Repository) Save(r Recipe, ingredientRepository ingredient.WriterTran
 				"MATCH (r:Recipe), (c:Category) WHERE r.id = $recipe_id AND c.id = $category_id CREATE (r)-[ui:USE_CATEGORY]->(c)",
 				map[string]interface{}{
 					"recipe_id":   recipeId,
-					"category_id": r.Category.ID,
+					"category_id": r.Category.ID.String(),
 				},
 			)
 
@@ -176,7 +184,7 @@ func parseIngredient(ingredientsNode neo4j.Node, foods neo4j.Node) (ingredient.I
 	var f food.Fooder
 
 	switch foods.Props()["type"] {
-	case "animal":
+	case string(food.FoodTypeAnimal):
 		f = food.Animal{
 			Id:   uuid.MustParse(foods.Props()["id"].(string)),
 			Name: food.Name(foods.Props()["name"].(string)),
@@ -185,7 +193,7 @@ func parseIngredient(ingredientsNode neo4j.Node, foods neo4j.Node) (ingredient.I
 				Value: foods.Props()["average_value"].(float64),
 			},
 		}
-	case "plant":
+	case string(food.FoodTypePlant):
 		f = food.Plant{
 			Id:             uuid.MustParse(foods.Props()["id"].(string)),
 			ScientificName: food.ScientificName(foods.Props()["scientific_name"].(string)),
@@ -199,7 +207,7 @@ func parseIngredient(ingredientsNode neo4j.Node, foods neo4j.Node) (ingredient.I
 				Value: foods.Props()["average_value"].(float64),
 			},
 		}
-	case "product":
+	case string(food.FoodTypeProduct):
 		f = food.Product{
 			Id:   uuid.MustParse(foods.Props()["id"].(string)),
 			Name: food.Name(foods.Props()["name"].(string)),
