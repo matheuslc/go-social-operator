@@ -32,10 +32,10 @@ type ingredient struct {
 }
 
 // NewIngredient creates a new ingredient
-func NewIngredient(f food.Fooder, u units.UnitType) (Ingredient, error) {
+func NewIngredient(f food.Fooder) (Ingredient, error) {
 	return ingredient{
 		food: f,
-		unit: u,
+		unit: f.Average(),
 	}, nil
 }
 

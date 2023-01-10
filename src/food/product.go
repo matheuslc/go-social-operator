@@ -19,6 +19,11 @@ func (p Product) GetID() uuid.UUID {
 func (p Product) Type() string {
 	return "product"
 }
+
 func (p Product) GetName() string {
 	return string(p.Name)
+}
+
+func (p Product) Average() measurements.UnitType {
+	return p.AverageAmount
 }

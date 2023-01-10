@@ -1,6 +1,9 @@
 package food
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+	"github.com/matheuslc/guiomar/src/measurements"
+)
 
 // Plant defines the food struct and its properties
 type Plant struct {
@@ -11,10 +14,11 @@ type Plant struct {
 	Name           `json:"name"`
 	Genus          `json:"genus"`
 	Specie         `json:"specie"`
+	AverageAmount  measurements.UnitType `json:"average_amount"`
 }
 
 // NewFood creates a new food struct with requireds params
-func NewVegetalFood(sn ScientificName, o Order, f Family, n Name, g Genus, sp Specie) Plant {
+func NewVegetalFood(sn ScientificName, o Order, f Family, n Name, g Genus, sp Specie, av measurements.UnitType) Plant {
 	return Plant{
 		ScientificName: sn,
 		Order:          o,
@@ -22,6 +26,7 @@ func NewVegetalFood(sn ScientificName, o Order, f Family, n Name, g Genus, sp Sp
 		Name:           n,
 		Genus:          g,
 		Specie:         sp,
+		AverageAmount:  av,
 	}
 }
 
@@ -36,4 +41,8 @@ func (f Plant) Type() string {
 
 func (f Plant) GetName() string {
 	return string(f.Name)
+}
+
+func (f Plant) Average() measurements.UnitType {
+	return f.AverageAmount
 }

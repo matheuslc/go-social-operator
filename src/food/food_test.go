@@ -1,6 +1,10 @@
 package food
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/matheuslc/guiomar/src/measurements"
+)
 
 func TestNewFood(t *testing.T) {
 	sn := ScientificName("Solanum lycopersicum var. cerasiforme")
@@ -9,6 +13,10 @@ func TestNewFood(t *testing.T) {
 	family := Family("Solanaceae")
 	genus := Genus("Solanum")
 	specie := Specie("S. lycopersicum")
+	averageAmount := measurements.UnitType{
+		Type:  "gram",
+		Value: 1000,
+	}
 
 	food := NewVegetalFood(
 		sn,
@@ -17,6 +25,7 @@ func TestNewFood(t *testing.T) {
 		name,
 		genus,
 		specie,
+		averageAmount,
 	)
 
 	if food.Name != name {

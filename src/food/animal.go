@@ -1,14 +1,18 @@
 package food
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+	"github.com/matheuslc/guiomar/src/measurements"
+)
 
 // Animal food
 type AnimalType string
 
 type Animal struct {
-	Id         uuid.UUID `json:"id"`
-	Name       `json:"name"`
-	AnimalType `json:"type"`
+	Id            uuid.UUID `json:"id"`
+	Name          `json:"name"`
+	AnimalType    `json:"type"`
+	AverageAmount measurements.UnitType `json:"average_amount"`
 }
 
 func NewAnimal(n Name, t AnimalType) Animal {
@@ -28,4 +32,8 @@ func (a Animal) Type() string {
 
 func (a Animal) GetName() string {
 	return string(a.Name)
+}
+
+func (a Animal) Average() measurements.UnitType {
+	return a.AverageAmount
 }

@@ -17,15 +17,17 @@ type Family string
 type Amount measurements.Unit
 
 type FoodPublic struct {
-	ID   string `json:"id"`
-	Type string `json:"type"`
-	Name string `json:"name"`
+	ID            string                `json:"id"`
+	Type          string                `json:"type"`
+	Name          string                `json:"name"`
+	AverageAmount measurements.UnitType `json:"average_amount"`
 }
 
 type Fooder interface {
 	GetID() uuid.UUID
 	Type() string
 	GetName() string
+	Average() measurements.UnitType
 }
 
 type FindFoodPayload struct {

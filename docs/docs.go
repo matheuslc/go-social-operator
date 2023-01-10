@@ -271,6 +271,9 @@ const docTemplate = `{
         "recipe.createRecipePayload": {
             "type": "object",
             "properties": {
+                "average_amount": {
+                    "$ref": "#/definitions/measurements.UnitType"
+                },
                 "category": {
                     "$ref": "#/definitions/category.SetCategoryPayload"
                 },

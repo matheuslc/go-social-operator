@@ -60,6 +60,7 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 			Name(payload.Name),
 			Genus(payload.Genus),
 			Specie(payload.Specie),
+			payload.AverageAmount,
 		)
 		persistedFood, err = repo.Save(food.(Plant))
 	case "product":

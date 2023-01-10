@@ -147,7 +147,7 @@ func (repo Repository) Save(f Plant) (Plant, error) {
 
 	persistedFood, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (f:PlantFood {id: $id, scientific_name: $scientific_name, name: $name, order: $order, family: $family, genus: $genus, specie: $specie}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type",
+			"CREATE (f:PlantFood {id: $id, scientific_name: $scientific_name, name: $name, order: $order, family: $family, genus: $genus, specie: $specie, average_type: $average_type, average_value: $average_value}) RETURN f.id, f.scientific_name, f.name, f.order, f.family, f.genus, f.specie, f.type, f.average_type, f.average_value",
 			map[string]interface{}{
 				"id":              uuid.New().String(),
 				"scientific_name": f.ScientificName,
@@ -157,6 +157,8 @@ func (repo Repository) Save(f Plant) (Plant, error) {
 				"genus":           f.Genus,
 				"specie":          f.Specie,
 				"type":            f.Type(),
+				"average_type":    f.AverageAmount.Type,
+				"average_value":   f.AverageAmount.Value,
 			},
 		)
 
@@ -173,6 +175,10 @@ func (repo Repository) Save(f Plant) (Plant, error) {
 				Family:         Family(result.Record().GetByIndex(4).(string)),
 				Genus:          Genus(result.Record().GetByIndex(5).(string)),
 				Specie:         Specie(result.Record().GetByIndex(6).(string)),
+				AverageAmount: measurements.UnitType{
+					Type:  result.Record().GetByIndex(7).(string),
+					Value: result.Record().GetByIndex(8).(float64),
+				},
 			}, nil
 		}
 
@@ -200,11 +206,13 @@ func (repo Repository) SaveAnimal(f Animal) (Fooder, error) {
 
 	persistedFood, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (f:AnimalFood { id: $id, name: $name, type: $type }) RETURN f.id, f.name, f.type",
+			"CREATE (f:AnimalFood { id: $id, name: $name, type: $type, average_type: $average_type, average_value: $average_value }) RETURN f.id, f.name, f.type, f.average_type, f.average_value",
 			map[string]interface{}{
-				"id":   uuid.New().String(),
-				"name": f.Name,
-				"type": f.Type(),
+				"id":            uuid.New().String(),
+				"name":          f.Name,
+				"type":          f.Type(),
+				"average_type":  f.AverageAmount.Type,
+				"average_value": f.AverageAmount.Value,
 			},
 		)
 
@@ -217,6 +225,10 @@ func (repo Repository) SaveAnimal(f Animal) (Fooder, error) {
 				Id:         uuid.MustParse(result.Record().GetByIndex(0).(string)),
 				Name:       Name(result.Record().GetByIndex(1).(string)),
 				AnimalType: AnimalType(result.Record().GetByIndex(2).(string)),
+				AverageAmount: measurements.UnitType{
+					Type:  result.Record().GetByIndex(3).(string),
+					Value: result.Record().GetByIndex(4).(float64),
+				},
 			}, nil
 		}
 

@@ -7,6 +7,7 @@ import (
 	"github.com/matheuslc/guiomar/src/category"
 	"github.com/matheuslc/guiomar/src/direction"
 	"github.com/matheuslc/guiomar/src/ingredient"
+	"github.com/matheuslc/guiomar/src/measurements"
 	m "github.com/matheuslc/guiomar/src/measurements"
 )
 
@@ -30,18 +31,20 @@ type Recipe struct {
 	PreparationTime time.Duration           `json:"preparation_time"`
 	Serving         int64                   `json:"serving"`
 	Yield           int64                   `json:"yield"`
+	AverageAmount   measurements.UnitType   `json:"average_amount"`
 }
 
 type RecipePublic struct {
-	ID           uuid.UUID                     `json:"id"`
-	Introduction string                        `json:"introduction"`
-	Summary      string                        `json:"summary"`
-	Ingredients  []ingredient.IngredientPublic `json:"ingredients"`
-	Direction    direction.Direction           `json:"direction"`
-	Category     category.Category             `json:"category"`
-	CookDuration time.Duration                 `json:"cook_duration"`
-	Serving      int64                         `json:"serving"`
-	Yield        int64                         `json:"yield"`
+	ID            uuid.UUID                     `json:"id"`
+	Introduction  string                        `json:"introduction"`
+	Summary       string                        `json:"summary"`
+	Ingredients   []ingredient.IngredientPublic `json:"ingredients"`
+	Direction     direction.Direction           `json:"direction"`
+	Category      category.Category             `json:"category"`
+	CookDuration  time.Duration                 `json:"cook_duration"`
+	Serving       int64                         `json:"serving"`
+	Yield         int64                         `json:"yield"`
+	AverageAmount measurements.UnitType         `json:"average_amount"`
 }
 
 // NewRecipe creates a valid recipe
@@ -55,6 +58,7 @@ func NewRecipe(
 	prepartionTime time.Duration,
 	serving int64,
 	yield int64,
+	averageAmount measurements.UnitType,
 ) (Recipe, error) {
 	return Recipe{
 		Summary:         summary,
@@ -66,6 +70,7 @@ func NewRecipe(
 		PreparationTime: prepartionTime,
 		Serving:         serving,
 		Yield:           yield,
+		AverageAmount:   averageAmount,
 	}, nil
 }
 
@@ -83,4 +88,8 @@ func (r Recipe) Type() string {
 
 func (r Recipe) GetName() string {
 	return string(r.Introduction)
+}
+
+func (r Recipe) Average() measurements.UnitType {
+	return r.AverageAmount
 }

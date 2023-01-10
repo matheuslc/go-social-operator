@@ -104,8 +104,8 @@ func (repo Repository) Save(r Recipe, ingredientRepository ingredient.WriterTran
 
 	_, err = session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"CREATE (r:Recipe {id: $id, summary: $summary, introduction: $introduction, cook_duration: $cook_duration, preparation_time: $preparation_time, serving: $serving, yield: $yield}) "+
-				"RETURN r.id, r.summary, r.introduction, r.cook_duration, r.preparation_time, r.serving, r.yield",
+			"CREATE (r:Recipe {id: $id, summary: $summary, introduction: $introduction, cook_duration: $cook_duration, preparation_time: $preparation_time, serving: $serving, yield: $yield, average_type: $average_time, average_value: $average_value}) "+
+				"RETURN r.id, r.summary, r.introduction, r.cook_duration, r.preparation_time, r.serving, r.yield, r.average_type, r.average_value",
 			map[string]interface{}{
 				"id":               uuid.New().String(),
 				"summary":          r.Summary,
@@ -114,6 +114,8 @@ func (repo Repository) Save(r Recipe, ingredientRepository ingredient.WriterTran
 				"preparation_time": r.PreparationTime,
 				"serving":          r.Serving,
 				"yield":            r.Yield,
+				"average_type":     r.AverageAmount.Type,
+				"average_value":    r.AverageAmount.Value,
 			},
 		)
 
@@ -172,13 +174,16 @@ func (repo Repository) Save(r Recipe, ingredientRepository ingredient.WriterTran
 
 func parseIngredient(ingredientsNode neo4j.Node, foods neo4j.Node) (ingredient.Ingredient, error) {
 	var f food.Fooder
-	var u measurements.UnitType
 
 	switch foods.Props()["type"] {
 	case "animal":
 		f = food.Animal{
 			Id:   uuid.MustParse(foods.Props()["id"].(string)),
 			Name: food.Name(foods.Props()["name"].(string)),
+			AverageAmount: measurements.UnitType{
+				Type:  foods.Props()["average_type"].(string),
+				Value: foods.Props()["average_value"].(float64),
+			},
 		}
 	case "plant":
 		f = food.Plant{
@@ -189,6 +194,10 @@ func parseIngredient(ingredientsNode neo4j.Node, foods neo4j.Node) (ingredient.I
 			Specie:         food.Specie(foods.Props()["specie"].(string)),
 			Family:         food.Family(foods.Props()["family"].(string)),
 			Genus:          food.Genus(foods.Props()["genus"].(string)),
+			AverageAmount: measurements.UnitType{
+				Type:  foods.Props()["average_type"].(string),
+				Value: foods.Props()["average_value"].(float64),
+			},
 		}
 	case "product":
 		f = food.Product{
@@ -203,12 +212,7 @@ func parseIngredient(ingredientsNode neo4j.Node, foods neo4j.Node) (ingredient.I
 		return nil, ErrInvalidFoodType
 	}
 
-	u = measurements.UnitType{
-		Type:  ingredientsNode.Props()["unit_type"].(string),
-		Value: ingredientsNode.Props()["amount"].(float64),
-	}
-
-	parsedIngredient, err := ingredient.NewIngredient(f, u)
+	parsedIngredient, err := ingredient.NewIngredient(f)
 	if err != nil {
 		log.Error(err)
 		return nil, err

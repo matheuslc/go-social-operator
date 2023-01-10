@@ -69,6 +69,8 @@ definitions:
     type: object
   recipe.createRecipePayload:
     properties:
+      average_amount:
+        $ref: '#/definitions/measurements.UnitType'
       category:
         $ref: '#/definitions/category.SetCategoryPayload'
       cook_duration:

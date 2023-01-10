@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/matheuslc/guiomar/src/category"
 	"github.com/matheuslc/guiomar/src/direction"
+	"github.com/matheuslc/guiomar/src/measurements"
 
 	"github.com/matheuslc/guiomar/src/step"
 
@@ -15,7 +16,12 @@ import (
 )
 
 func TestNewRecipe(t *testing.T) {
+	averageAmount := measurements.UnitType{
+		Type:  "gram",
+		Value: 1000,
+	}
 	foodName := food.Name("Cherry tomato")
+
 	food := food.NewVegetalFood(
 		food.ScientificName("Solanum lycopersicum var. cerasiforme"),
 		food.Order("Solanales"),
@@ -23,14 +29,10 @@ func TestNewRecipe(t *testing.T) {
 		foodName,
 		food.Genus("Fruit vegetables"),
 		food.Specie("Cherry tomato"),
+		averageAmount,
 	)
 
-	grams := units.UnitType{
-		Type:  "gram",
-		Value: 60,
-	}
-
-	ingr, _ := ingredient.NewIngredient(food, grams)
+	ingr, _ := ingredient.NewIngredient(food)
 	collection := []ingredient.Ingredient{}
 	ingrs := append(collection, ingr)
 
@@ -79,6 +81,7 @@ func TestNewRecipe(t *testing.T) {
 		20,
 		6,
 		3,
+		averageAmount,
 	)
 
 	if err != nil {

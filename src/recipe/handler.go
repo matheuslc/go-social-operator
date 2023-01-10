@@ -11,6 +11,7 @@ import (
 	"github.com/matheuslc/guiomar/src/direction"
 	"github.com/matheuslc/guiomar/src/food"
 	"github.com/matheuslc/guiomar/src/ingredient"
+	"github.com/matheuslc/guiomar/src/measurements"
 	m "github.com/matheuslc/guiomar/src/measurements"
 	"github.com/matheuslc/guiomar/src/step"
 )
@@ -25,6 +26,7 @@ type createRecipePayload struct {
 	PreparationTime time.Duration                  `json:"preparation_time"`
 	Serving         int64                          `json:"serving"`
 	Yield           int64                          `json:"yield"`
+	AverageAmount   measurements.UnitType          `json:"average_amount"`
 }
 
 // NewRecipeHandlerWrapper godoc
@@ -91,6 +93,7 @@ func handler(repo Repository, foodRepository food.Repository, ingredientReposito
 		payload.PreparationTime,
 		payload.Serving,
 		payload.Yield,
+		payload.AverageAmount,
 	)
 
 	if err != nil {
@@ -117,7 +120,7 @@ func convertIngredients(payload []ingredient.IngredientPayload, recipeRepository
 				return nil, err
 			}
 
-			parsed, err := ingredient.NewIngredient(f, ingr.Amount)
+			parsed, err := ingredient.NewIngredient(f)
 			if err != nil {
 				return nil, err
 			}
@@ -129,7 +132,7 @@ func convertIngredients(payload []ingredient.IngredientPayload, recipeRepository
 				return nil, err
 			}
 
-			parsed, err := ingredient.NewIngredient(f, ingr.Amount)
+			parsed, err := ingredient.NewIngredient(f)
 			if err != nil {
 				return nil, err
 			}
