@@ -2,13 +2,13 @@ package measurements
 
 import (
 	"errors"
-	"fmt"
 )
 
 type Unit float64
 
 type Uniter interface {
-	ValueOf() string
+	TypeOf() string
+	ValueOf() float64
 }
 
 var (
@@ -33,10 +33,16 @@ func (t UnitType) Convert(to UnitType) (Uniter, error) {
 		c := Cup(t.Value)
 		return c.Convert(to)
 	}
+
 	return nil, ErrNotConvertible
 }
 
 // ValueOf defines
-func (unit UnitType) ValueOf() string {
-	return fmt.Sprintf("%f", unit.Value)
+func (unit UnitType) ValueOf() float64 {
+	return unit.Value
+}
+
+// ValueOf defines
+func (unit UnitType) TypeOf() string {
+	return unit.Type
 }

@@ -26,7 +26,7 @@ func TestNewIngredient(t *testing.T) {
 		unit,
 	)
 
-	i, err := NewIngredient(food)
+	i, err := NewIngredient(food, unit)
 
 	if err != nil {
 		t.Errorf("Cannot create a new ingredient. Error %s", err)

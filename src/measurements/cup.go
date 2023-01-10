@@ -5,8 +5,12 @@ import "fmt"
 // UnitToGram creates a new gram with an defined alue
 type Cup Gram
 
-func (cup Cup) ValueOf() string {
-	return fmt.Sprintf("%f", float64(cup))
+func (cup Cup) ValueOf() float64 {
+	return float64(cup)
+}
+
+func (cup Cup) TypeOf() string {
+	return "cup"
 }
 
 func (cup Cup) String() string {

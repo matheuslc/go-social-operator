@@ -6,6 +6,10 @@ func (ml Millimeter) ValueOf() float64 {
 	return float64(ml)
 }
 
+func (ml Millimeter) TypeOf() string {
+	return "ml"
+}
+
 func (ml Millimeter) ToCup() Cup {
 	return Cup(float64(ml) / 240)
 }

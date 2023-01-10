@@ -15,7 +15,7 @@ func TestCupConversion(t *testing.T) {
 		t.Errorf("Cannot convert unit. Error %s", err)
 	}
 
-	if converted.ValueOf() != "240.000000" {
-		t.Errorf("Expected 240, got %s", converted.ValueOf())
+	if converted.ValueOf() != 240 {
+		t.Errorf("Expected 240, got %f", converted.ValueOf())
 	}
 }

@@ -15,7 +15,7 @@ func TestGramConversion(t *testing.T) {
 		t.Errorf("Cannot convert unit. Error %s", err)
 	}
 
-	if converted.ValueOf() != "2.000000" {
-		t.Errorf("Expected 2, got %s", converted.ValueOf())
+	if converted.ValueOf() != 2 {
+		t.Errorf("Expected 2, got %f", converted.ValueOf())
 	}
 }

@@ -15,10 +15,11 @@ type Animal struct {
 	AverageAmount measurements.UnitType `json:"average_amount"`
 }
 
-func NewAnimal(n Name, t AnimalType) Animal {
+func NewAnimal(n Name, t AnimalType, av measurements.UnitType) Animal {
 	return Animal{
-		Name:       n,
-		AnimalType: t,
+		Name:          n,
+		AnimalType:    t,
+		AverageAmount: av,
 	}
 }
 

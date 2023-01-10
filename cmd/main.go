@@ -14,8 +14,6 @@ import (
 
 	"github.com/gorilla/mux"
 
-	log "github.com/sirupsen/logrus"
-
 	_ "github.com/matheuslc/guiomar/docs"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -34,7 +32,6 @@ import (
 
 // @host localhost:3010
 func main() {
-	log.SetReportCaller(true)
 	app, _ := context.NewAppContext()
 	router := mux.NewRouter()
 

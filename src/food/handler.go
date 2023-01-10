@@ -50,7 +50,7 @@ func handler(repo Repository, w http.ResponseWriter, r *http.Request) {
 
 	switch payload.Type {
 	case string(FoodTypeAnimal):
-		food = NewAnimal(payload.Name, AnimalType(payload.AnimalType))
+		food = NewAnimal(payload.Name, AnimalType(payload.AnimalType), payload.AverageAmount)
 		persistedFood, err = repo.SaveAnimal(food.(Animal))
 	case string(FoodTypePlant):
 		food = NewVegetalFood(

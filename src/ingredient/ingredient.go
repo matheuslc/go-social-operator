@@ -3,6 +3,7 @@ package ingredient
 import (
 	"github.com/google/uuid"
 	food "github.com/matheuslc/guiomar/src/food"
+	"github.com/matheuslc/guiomar/src/measurements"
 	units "github.com/matheuslc/guiomar/src/measurements"
 )
 
@@ -32,10 +33,10 @@ type ingredient struct {
 }
 
 // NewIngredient creates a new ingredient
-func NewIngredient(f food.Fooder) (Ingredient, error) {
+func NewIngredient(f food.Fooder, unit measurements.UnitType) (Ingredient, error) {
 	return ingredient{
 		food: f,
-		unit: f.Average(),
+		unit: unit,
 	}, nil
 }
 

@@ -21,7 +21,6 @@ func TestNewRecipe(t *testing.T) {
 		Value: 1000,
 	}
 	foodName := food.Name("Cherry tomato")
-
 	food := food.NewVegetalFood(
 		food.ScientificName("Solanum lycopersicum var. cerasiforme"),
 		food.Order("Solanales"),
@@ -32,7 +31,7 @@ func TestNewRecipe(t *testing.T) {
 		averageAmount,
 	)
 
-	ingr, _ := ingredient.NewIngredient(food)
+	ingr, _ := ingredient.NewIngredient(food, averageAmount)
 	collection := []ingredient.Ingredient{}
 	ingrs := append(collection, ingr)
 

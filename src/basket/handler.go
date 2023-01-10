@@ -2,6 +2,7 @@ package basket
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -112,27 +113,58 @@ func handler(recipeRepository recipe.Reader, w http.ResponseWriter, r *http.Requ
 		})
 	}
 
+	unifiedCollection := optimizeGrooceryList(ingredientCollection)
+
+	bsk := BasketPublic{Recipes: recipesPublicCollection, Ingredients: unifiedCollection}
+
+	respondWithJSON(w, http.StatusOK, bsk)
+}
+
+func optimizeGrooceryList(ingredientCollection []ingredient.IngredientPublic) []ingredient.IngredientPublic {
 	unifyIngredients := make(map[string]ingredient.IngredientPublic)
 	unifiedCollection := []ingredient.IngredientPublic{}
+
 	for _, ing := range ingredientCollection {
 		key := ing.Food.ID
+
+		if ing.Food.AverageAmount.Type != ing.Unit.Type {
+			converted, err := ing.Unit.Convert(measurements.UnitType{
+				Type:  ing.Food.AverageAmount.Type,
+				Value: ing.Unit.Value,
+			})
+
+			if errors.Is(err, measurements.ErrNotConvertible) {
+				converted = ing.Unit
+			} else {
+				ing.Unit = measurements.UnitType{
+					Type:  ing.Food.AverageAmount.Type,
+					Value: converted.ValueOf(),
+				}
+			}
+		}
+
 		if _, ok := unifyIngredients[key]; ok {
 			result := unifyIngredients[key].Unit.Value + ing.Unit.Value
-			ing.Unit.Value = result
 
-			unifyIngredients[key] = ing
+			unifyIngredients[key] = ingredient.IngredientPublic{
+				Food: ing.Food,
+				Unit: measurements.UnitType{
+					Type:  ing.Unit.Type,
+					Value: result,
+				},
+			}
 		} else {
 			unifyIngredients[key] = ing
 		}
 	}
 
+	log.Info("=== Grocery list ===")
 	for _, ing := range unifyIngredients {
 		unifiedCollection = append(unifiedCollection, ing)
+		log.Info(fmt.Sprintf("Item: %s Amount: %f%s", ing.Food.Name, ing.Unit.Value, ing.Unit.Type))
 	}
 
-	bsk := BasketPublic{Recipes: recipesPublicCollection, Ingredients: unifiedCollection}
-
-	respondWithJSON(w, http.StatusOK, bsk)
+	return unifiedCollection
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {

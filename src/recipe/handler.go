@@ -116,13 +116,19 @@ func handler(repo Repository, foodRepository food.Repository, ingredientReposito
 func convertIngredients(payload []ingredient.IngredientPayload, recipeRepository Reader, foodRepository food.Repository) ([]ingredient.Ingredient, error) {
 	ingrs := make([]ingredient.Ingredient, len(payload))
 	for i, ingr := range payload {
+		unit := measurements.UnitType{
+			Type:  ingr.Amount.Type,
+			Value: ingr.Amount.Value,
+		}
+
 		if ingr.Food.Type == "recipe" {
 			f, err := recipeRepository.Find(uuid.MustParse(ingr.Food.ID))
 			if err != nil {
 				return nil, err
 			}
 
-			parsed, err := ingredient.NewIngredient(f)
+			parsed, err := ingredient.NewIngredient(f, unit)
+
 			if err != nil {
 				return nil, err
 			}
@@ -134,7 +140,7 @@ func convertIngredients(payload []ingredient.IngredientPayload, recipeRepository
 				return nil, err
 			}
 
-			parsed, err := ingredient.NewIngredient(f)
+			parsed, err := ingredient.NewIngredient(f, unit)
 			if err != nil {
 				return nil, err
 			}

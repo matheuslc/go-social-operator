@@ -220,7 +220,11 @@ func parseIngredient(ingredientsNode neo4j.Node, foods neo4j.Node) (ingredient.I
 		return nil, ErrInvalidFoodType
 	}
 
-	parsedIngredient, err := ingredient.NewIngredient(f)
+	parsedIngredient, err := ingredient.NewIngredient(f, measurements.UnitType{
+		Type:  ingredientsNode.Props()["unit_type"].(string),
+		Value: ingredientsNode.Props()["amount"].(float64),
+	})
+
 	if err != nil {
 		log.Error(err)
 		return nil, err
